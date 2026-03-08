@@ -1,3 +1,5 @@
+import Link from "next/link";
+
 export default function HomePage() {
   const classes = [
     {
@@ -109,12 +111,17 @@ export default function HomePage() {
                     </div>
 
                     <div className="mt-5 flex flex-wrap gap-3">
-                      <button className="rounded-2xl border border-white/10 bg-white/5 px-4 py-2 text-sm font-medium text-white transition hover:bg-white/10">
-                        Open Class
-                      </button>
-                      <button className="rounded-2xl border border-white/10 bg-white/5 px-4 py-2 text-sm font-medium text-white transition hover:bg-white/10">
-                        View Lectures
-                      </button>
+                      <Link href={`/classes/${course.id}`}>
+                        <button className="rounded-2xl border border-white/10 bg-white/5 px-4 py-2 text-sm font-medium text-white transition hover:bg-white/10">
+                          Open Class
+                        </button>
+                      </Link>
+
+                      <Link href={`/classes/${course.id}`}>
+                        <button className="rounded-2xl border border-white/10 bg-white/5 px-4 py-2 text-sm font-medium text-white transition hover:bg-white/10">
+                          View Lectures
+                        </button>
+                      </Link>
                     </div>
                   </div>
                 </div>
