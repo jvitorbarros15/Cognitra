@@ -66,25 +66,24 @@ export default function HomePage() {
     }
   }
 
-  // ADDED: opens hidden file picker when upload button is clicked
+  // opens hidden file picker when upload button is clicked
   function handleUploadClick() {
     if (fileInputRef.current) {
       fileInputRef.current.click();
     }
   }
 
-  // ADDED: handles selected file from upload button
+  // handles selected file from upload button
   async function handleFileChange(e) {
     const file = e.target.files?.[0];
     if (!file) return;
 
     await sendAudioToBackend(file);
 
-    // ADDED: reset input so the same file can be selected again later
+    //  reset input so the same file can be selected again later
     e.target.value = "";
   }
 
-  // ADDED: starts recording on first click, stops recording on second click
   async function handleRecordClick() {
     if (isRecording) {
       mediaRecorderRef.current?.stop();
@@ -245,12 +244,12 @@ export default function HomePage() {
                   <div className="flex items-start justify-between gap-4">
                     <div>
                       <p className="text-lg font-semibold text-white">
-                        {isRecording ? "Stop Recording" : "Record Live Lecture"} {/* ADDED: changes label while recording */}
+                        {isRecording ? "Stop Recording" : "Record Live Lecture"} 
                       </p>
                       <p className="mt-1 text-sm text-slate-300">
                         {isRecording
                           ? "Recording now. Click again when class ends."
-                          : "Start recording your professor in real time and process the lecture when class ends."} {/* ADDED: changes helper text while recording */}
+                          : "Start recording your professor in real time and process the lecture when class ends."} 
                       </p>
                     </div>
                     <div className="rounded-2xl bg-cyan-400/15 px-3 py-2 text-cyan-200">
@@ -275,11 +274,11 @@ export default function HomePage() {
                   </div>
                 </button>
                 <input
-                  ref={fileInputRef} // ADDED: hidden file input used by upload button
-                  type="file" // ADDED
-                  accept="audio/*" // ADDED: only audio files
-                  onChange={handleFileChange} // ADDED: send selected file to backend
-                  className="hidden" // ADDED: hidden because we trigger it from button
+                  ref={fileInputRef} 
+                  type="file"
+                  accept="audio/*" 
+                  onChange={handleFileChange} 
+                  className="hidden" 
                 />
               </div>
             </div>
@@ -292,7 +291,6 @@ export default function HomePage() {
               </div>
             )}
 
-            {/* ADDED: error state */}
             {error && (
               <div className="rounded-3xl border border-red-400/20 bg-red-500/10 p-6 shadow-2xl backdrop-blur-xl">
                 <h2 className="text-xl font-semibold text-red-200">Something went wrong</h2>
@@ -300,7 +298,6 @@ export default function HomePage() {
               </div>
             )}
 
-            {/* ADDED: transcript result panel */}
             {transcript && (
               <div className="rounded-3xl border border-cyan-400/20 bg-white/5 p-6 shadow-2xl backdrop-blur-xl">
                 <h2 className="text-2xl font-semibold">Transcript</h2>

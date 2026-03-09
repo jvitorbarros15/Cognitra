@@ -9,7 +9,7 @@ function sleep(ms) {
 
 export async function POST(req) {
   try {
-    const apiKey = process.env.ASSEMBLYAI_API_KEY; // ADDED: reads your API key from .env.local
+    const apiKey = process.env.ASSEMBLYAI_API_KEY; 
 
     if (!apiKey) {
       return NextResponse.json(
@@ -18,8 +18,8 @@ export async function POST(req) {
       );
     }
 
-    const formData = await req.formData(); // ADDED: receives file from frontend
-    const file = formData.get("file"); // ADDED
+    const formData = await req.formData(); 
+    const file = formData.get("file"); 
 
     if (!file) {
       return NextResponse.json(
@@ -28,14 +28,14 @@ export async function POST(req) {
       );
     }
 
-    const arrayBuffer = await file.arrayBuffer(); // ADDED: turn uploaded file into buffer
-    const buffer = Buffer.from(arrayBuffer); // ADDED
+    const arrayBuffer = await file.arrayBuffer();
+    const buffer = Buffer.from(arrayBuffer); 
 
     const headers = {
       authorization: apiKey,
     };
 
-    // ADDED: Step 1, upload raw audio file to AssemblyAI
+    // upload raw audio file to AssemblyAI
     const uploadRes = await axios.post(`${baseUrl}/v2/upload`, buffer, {
       headers: {
         ...headers,
@@ -44,9 +44,9 @@ export async function POST(req) {
       maxBodyLength: Infinity,
     });
 
-    const audioUrl = uploadRes.data.upload_url; // ADDED
+    const audioUrl = uploadRes.data.upload_url; 
 
-    // ADDED: Step 2, request a transcription job
+    
     const transcriptRes = await axios.post(
       `${baseUrl}/v2/transcript`,
       {
@@ -60,9 +60,9 @@ export async function POST(req) {
       { headers }
     );
 
-    const transcriptId = transcriptRes.data.id; // ADDED
+    const transcriptId = transcriptRes.data.id; 
 
-    // ADDED: Step 3, poll until transcript is completed
+    // poll until transcript is completed
     while (true) {
       const pollingRes = await axios.get(
         `${baseUrl}/v2/transcript/${transcriptId}`,
@@ -89,7 +89,7 @@ export async function POST(req) {
         );
       }
 
-      await sleep(3000); // ADDED: wait 3 seconds before polling again
+      await sleep(3000); 
     }
   } catch (error) {
     console.error(
