@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useMemo, useState } from "react";
+import { useCallback, useMemo, useState, useEffect } from "react";
 import {
   ReactFlow,
   applyNodeChanges,
@@ -11,41 +11,100 @@ import {
   MiniMap,
 } from "@xyflow/react";
 import "@xyflow/react/dist/style.css";
+import MindMapNode from "./MindMapNode";
 
-// ADDED: transform AI JSON into React Flow nodes and edges
-function mindMapToFlow(data) {
+const nodeTypes = {
+  mindMapNode: MindMapNode,
+};
+
+
+function mindMapToFlow(data, styleSettings) {
   const nodes = [];
   const edges = [];
   let nodeIdCounter = 1;
 
-  function createNode(label, x, y) {
-    const id = `node-${nodeIdCounter++}`;
-    nodes.push({
-      id,
-      position: { x, y },
-      data: { label },
-      style: {
-          background: "#ffffff", // ADDED
-          color: "#000000", // ADDED: makes text visible
-          border: "1px solid #444",
-          padding: 10,
-          borderRadius: 8,
-        },
-    });
-    return id;
-  }
+  function createNode(label, x, y, level = 0, branchIndex = 0) {
+  const id = `node-${nodeIdCounter++}`;
 
-  // ADDED: root node
-  const rootId = createNode(data.root || "Main Topic", 400, 50);
+  const palette = [
+    { color: "#06b6d4", textColor: "#082f49", borderColor: "#22d3ee" },
+    { color: "#a855f7", textColor: "#f5f3ff", borderColor: "#c084fc" },
+    { color: "#22c55e", textColor: "#052e16", borderColor: "#4ade80" },
+    { color: "#f97316", textColor: "#431407", borderColor: "#fb923c" },
+    { color: "#e11d48", textColor: "#fff1f2", borderColor: "#fb7185" },
+  ];
 
-  const level1 = data.children || [];
+  const monoPalette = { 
+      root: { color: "#f8fafc", textColor: "#0f172a", borderColor: "#cbd5e1" },
+      child: { color: "#0f172a", textColor: "#e2e8f0", borderColor: "#334155" },
+      leaf: { color: "#1e293b", textColor: "#e2e8f0", borderColor: "#475569" },
+    };
+  
+  let colors;
+
+  if (styleSettings.colorMode === "mono") { 
+      if (level === 0) colors = monoPalette.root;
+      else if (level === 1) colors = monoPalette.child;
+      else colors = monoPalette.leaf;
+    } else {
+      colors =
+        level === 0
+          ? { color: "#f8fafc", textColor: "#0f172a", borderColor: "#cbd5e1" }
+          : palette[branchIndex % palette.length];
+    }
+
+  const branchStyle = palette[branchIndex % palette.length];
+
+  let shape = "rounded";
+  let width = 180;
+  let height = 56;
+
+  if (level === 0) {
+      shape = styleSettings.rootShape; 
+      width = shape === "circle" ? 150 : 220; 
+      height = shape === "circle" ? 150 : 64; 
+    } else if (level === 1) {
+      shape = styleSettings.childShape;
+      width = shape === "circle" ? 140 : 190; 
+      height = shape === "circle" ? 140 : 56; 
+    } else {
+      shape = styleSettings.leafShape; 
+      width = shape === "circle" ? 130 : 160; 
+      height = shape === "circle" ? 130 : 56; 
+    }
+
+
+  nodes.push({
+    id,
+    type: "mindMapNode",
+    position: { x, y },
+    data: {
+      label,
+      shape,
+      width,
+      height,
+      color: colors.color,
+      textColor: colors.textColor,
+      borderColor: colors.borderColor,
+      fontSize: level === 0 ? 16 : 14,
+    },
+  });
+
+  return id;
+}
+  
+  const safeData = data || { root: "Main Topic", children: [] };
+  // create root node
+  const rootId = createNode(safeData.root || "Main Topic", 400, 50, 0, 0); 
+
+  const level1 = safeData.children || [];
   const level1Spacing = 250;
   const startX1 = 400 - ((level1.length - 1) * level1Spacing) / 2;
 
   level1.forEach((child, i) => {
     const childX = startX1 + i * level1Spacing;
     const childY = 220;
-    const childId = createNode(child.label, childX, childY);
+    const childId = createNode(child.label, childX, childY, 1, i); 
 
     edges.push({
       id: `${rootId}-${childId}`,
@@ -60,7 +119,7 @@ function mindMapToFlow(data) {
     grandchildren.forEach((grandchild, j) => {
       const grandchildX = startX2 + j * level2Spacing;
       const grandchildY = 390;
-      const grandchildId = createNode(grandchild.label, grandchildX, grandchildY);
+      const grandchildId = createNode(grandchild.label, grandchildX, grandchildY, 2, i); 
 
       edges.push({
         id: `${childId}-${grandchildId}`,
@@ -74,12 +133,25 @@ function mindMapToFlow(data) {
 }
 
 export default function MindMapFlow({ mindMap }) {
+
+  const [styleSettings, setStyleSettings] = useState({ 
+    colorMode: "branch",
+    rootShape: "pill",
+    childShape: "rounded",
+    leafShape: "circle",
+  });
+
   const initialFlow = useMemo(() => {
-    return mindMapToFlow(mindMap);
-  }, [mindMap]);
+    return mindMapToFlow(mindMap,styleSettings);
+  }, [mindMap, styleSettings]);
 
   const [nodes, setNodes] = useState(initialFlow.nodes);
   const [edges, setEdges] = useState(initialFlow.edges);
+
+  useEffect(() => {
+    setNodes(initialFlow.nodes);
+    setEdges(initialFlow.edges);
+  }, [initialFlow]);
 
   const onNodesChange = useCallback(
     (changes) => setNodes((snapshot) => applyNodeChanges(changes, snapshot)),
@@ -97,19 +169,54 @@ export default function MindMapFlow({ mindMap }) {
   );
 
   return (
+    <div className="w-full rounded-3xl border border-white/10 bg-slate-950 p-4">
+      <div className="mb-4 flex flex-wrap gap-3">
+        <select
+          value={styleSettings.colorMode}
+          onChange={(e) =>
+            setStyleSettings((prev) => ({
+              ...prev,
+              colorMode: e.target.value,
+            }))
+          }
+          className="rounded-xl bg-slate-800 px-3 py-2 text-white"
+        >
+          <option value="branch">Colors by Branch</option>
+          <option value="mono">Monochrome</option>
+        </select>
+
+        <select
+          value={styleSettings.leafShape}
+          onChange={(e) =>
+            setStyleSettings((prev) => ({
+              ...prev,
+              leafShape: e.target.value,
+            }))
+          }
+          className="rounded-xl bg-slate-800 px-3 py-2 text-white"
+        >
+          <option value="circle">Circle Leaves</option>
+          <option value="rounded">Rounded Leaves</option>
+          <option value="pill">Pill Leaves</option>
+          <option value="square">Square Leaves</option>
+        </select>
+      </div>
+
     <div className="h-[700px] w-full rounded-3xl border border-white/10 bg-slate-950">
       <ReactFlow
         nodes={nodes}
         edges={edges}
+        nodeTypes={nodeTypes}
         onNodesChange={onNodesChange}
         onEdgesChange={onEdgesChange}
         onConnect={onConnect}
         fitView
       >
-        <Background />
+        <Background color="#334155" gap={16} />
         <MiniMap />
         <Controls />
       </ReactFlow>
     </div>
+   </div>
   );
 }
