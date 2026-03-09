@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useMemo, useState, useEffect } from "react";
+import { useCallback, useState, useEffect } from "react";
 import {
   ReactFlow,
   applyNodeChanges,
@@ -18,7 +18,7 @@ const nodeTypes = {
 };
 
 
-function mindMapToFlow(data, styleSettings) {
+function mindMapToFlow(data, styleSettings, handleLabelChange, handleDeleteNode) {
   const nodes = [];
   const edges = [];
   let nodeIdCounter = 1;
@@ -87,6 +87,8 @@ function mindMapToFlow(data, styleSettings) {
       textColor: colors.textColor,
       borderColor: colors.borderColor,
       fontSize: level === 0 ? 16 : 14,
+      onLabelChange: handleLabelChange, 
+      onDelete: handleDeleteNode, 
     },
   });
 
@@ -141,17 +143,83 @@ export default function MindMapFlow({ mindMap }) {
     leafShape: "circle",
   });
 
-  const initialFlow = useMemo(() => {
-    return mindMapToFlow(mindMap,styleSettings);
-  }, [mindMap, styleSettings]);
+  const [nodes, setNodes] = useState([]); // CHANGED: start empty so handlers can be defined first
+  const [edges, setEdges] = useState([]); // CHANGED: start empty so handlers can be defined first
+  const [nextId, setNextId] = useState(1000); // ADDED: used for newly created user nodes
 
-  const [nodes, setNodes] = useState(initialFlow.nodes);
-  const [edges, setEdges] = useState(initialFlow.edges);
+  const handleLabelChange = useCallback((nodeId, newLabel) => { // ADDED: updates text inside a node
+    setNodes((prev) =>
+      prev.map((node) =>
+        node.id === nodeId
+          ? {
+              ...node,
+              data: {
+                ...node.data,
+                label: newLabel,
+              },
+            }
+          : node
+      )
+    );
+  }, []);
+
+  const handleDeleteNode = useCallback((nodeId) => { // ADDED: removes node and connected edges
+    setNodes((prev) => prev.filter((node) => node.id !== nodeId));
+    setEdges((prev) =>
+      prev.filter((edge) => edge.source !== nodeId && edge.target !== nodeId)
+    );
+  }, []);
+
+  const onEdgesDelete = useCallback((deletedEdges) => { // ADDED: allow deleting edges
+    setEdges((prev) =>
+        prev.filter((edge) => !deletedEdges.some((e) => e.id === edge.id))
+    );
+    }, []);
+
+    const onReconnect = useCallback((oldEdge, newConnection) => { // ADDED: allow moving edges
+    setEdges((eds) =>
+        eds.map((edge) =>
+        edge.id === oldEdge.id
+            ? { ...edge, ...newConnection }
+            : edge
+        )
+    );
+    }, []);
+
+  const handleAddNode = useCallback(() => { // ADDED: lets user create a new node manually
+    const id = `node-${nextId}`;
+
+    setNodes((prev) => [
+      ...prev,
+      {
+        id,
+        type: "mindMapNode",
+        position: {
+          x: 250 + Math.random() * 250,
+          y: 180 + Math.random() * 250,
+        },
+        data: {
+          label: "New Node",
+          shape: styleSettings.leafShape,
+          width: styleSettings.leafShape === "circle" ? 130 : 160,
+          height: styleSettings.leafShape === "circle" ? 130 : 56,
+          color: "#1e293b",
+          textColor: "#e2e8f0",
+          borderColor: "#475569",
+          fontSize: 14,
+          onLabelChange: handleLabelChange, // ADDED
+          onDelete: handleDeleteNode, // ADDED
+        },
+      },
+    ]);
+    setNextId((id) => id + 1);
+  }, [nextId, styleSettings.leafShape, handleLabelChange, handleDeleteNode]);
 
   useEffect(() => {
-    setNodes(initialFlow.nodes);
-    setEdges(initialFlow.edges);
-  }, [initialFlow]);
+    const flow = mindMapToFlow(mindMap, styleSettings, handleLabelChange, handleDeleteNode);
+    setNodes(flow.nodes);
+    setEdges(flow.edges);
+  }, [mindMap, styleSettings, handleLabelChange, handleDeleteNode]);
 
   const onNodesChange = useCallback(
     (changes) => setNodes((snapshot) => applyNodeChanges(changes, snapshot)),
@@ -200,6 +268,14 @@ export default function MindMapFlow({ mindMap }) {
           <option value="pill">Pill Leaves</option>
           <option value="square">Square Leaves</option>
         </select>
+
+        <button
+          onClick={handleAddNode} // ADDED: creates a new editable node
+          className="rounded-xl bg-cyan-400 px-4 py-2 text-sm font-semibold text-slate-950"
+          type="button"
+        >
+          + Add Node
+        </button>
       </div>
 
     <div className="h-[700px] w-full rounded-3xl border border-white/10 bg-slate-950">
@@ -209,12 +285,32 @@ export default function MindMapFlow({ mindMap }) {
         nodeTypes={nodeTypes}
         onNodesChange={onNodesChange}
         onEdgesChange={onEdgesChange}
+        onEdgesDelete={onEdgesDelete}
+        onReconnect={onReconnect}
+        deleteKeyCode={["Backspace", "Delete"]} 
+        edgesReconnectable={true}
         onConnect={onConnect}
         fitView
       >
         <Background color="#334155" gap={16} />
-        <MiniMap />
-        <Controls />
+        <MiniMap
+            nodeColor={(node) => node.data?.color || "#06b6d4"} // ADDED
+            nodeStrokeColor="#1e293b" // ADDED
+            nodeBorderRadius={4} // ADDED
+            style={{
+            backgroundColor: "#020617", // ADDED
+            border: "1px solid #334155", // ADDED
+            }}
+        />
+
+        <Controls
+            style={{
+            background: "#020617", // ADDED
+            border: "1px solid #334155", // ADDED
+            color: "#9fa9b5", // ADDED
+            }}
+        />
+
       </ReactFlow>
     </div>
    </div>
