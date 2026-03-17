@@ -6,7 +6,7 @@ export async function POST(req) {
   console.log("OPENAI KEY:", process.env.OPENAI_API_KEY);
 
   try {
-    const { transcript } = await req.json(); // ADDED: receive transcript from frontend
+    const { transcript } = await req.json(); 
 
     if (!transcript) {
       return NextResponse.json(
@@ -51,12 +51,12 @@ Transcript:
 ${transcript}
 `;
 
-    const response = await llm.invoke(prompt); // ADDED: call OpenAI through LangChain
+    const response = await llm.invoke(prompt); 
 
     let parsed;
 
     try {
-      parsed = JSON.parse(response.content); // ADDED: parse returned JSON
+      parsed = JSON.parse(response.content); 
     } catch (parseError) {
       return NextResponse.json(
         {

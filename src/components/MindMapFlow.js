@@ -112,6 +112,8 @@ function mindMapToFlow(data, styleSettings, handleLabelChange, handleDeleteNode)
       id: `${rootId}-${childId}`,
       source: rootId,
       target: childId,
+      type: "smoothstep",
+      animated: false,
     });
 
     const grandchildren = child.children || [];
@@ -127,6 +129,8 @@ function mindMapToFlow(data, styleSettings, handleLabelChange, handleDeleteNode)
         id: `${childId}-${grandchildId}`,
         source: childId,
         target: grandchildId,
+        type: "smoothstep",
+        animated: false,
       });
     });
   });
@@ -143,11 +147,11 @@ export default function MindMapFlow({ mindMap }) {
     leafShape: "circle",
   });
 
-  const [nodes, setNodes] = useState([]); // CHANGED: start empty so handlers can be defined first
-  const [edges, setEdges] = useState([]); // CHANGED: start empty so handlers can be defined first
-  const [nextId, setNextId] = useState(1000); // ADDED: used for newly created user nodes
+  const [nodes, setNodes] = useState([]); 
+  const [edges, setEdges] = useState([]); 
+  const [nextId, setNextId] = useState(1000); 
 
-  const handleLabelChange = useCallback((nodeId, newLabel) => { // ADDED: updates text inside a node
+  const handleLabelChange = useCallback((nodeId, newLabel) => { 
     setNodes((prev) =>
       prev.map((node) =>
         node.id === nodeId
@@ -163,20 +167,20 @@ export default function MindMapFlow({ mindMap }) {
     );
   }, []);
 
-  const handleDeleteNode = useCallback((nodeId) => { // ADDED: removes node and connected edges
+  const handleDeleteNode = useCallback((nodeId) => { 
     setNodes((prev) => prev.filter((node) => node.id !== nodeId));
     setEdges((prev) =>
       prev.filter((edge) => edge.source !== nodeId && edge.target !== nodeId)
     );
   }, []);
 
-  const onEdgesDelete = useCallback((deletedEdges) => { // ADDED: allow deleting edges
+  const onEdgesDelete = useCallback((deletedEdges) => { 
     setEdges((prev) =>
         prev.filter((edge) => !deletedEdges.some((e) => e.id === edge.id))
     );
     }, []);
 
-    const onReconnect = useCallback((oldEdge, newConnection) => { // ADDED: allow moving edges
+    const onReconnect = useCallback((oldEdge, newConnection) => { 
     setEdges((eds) =>
         eds.map((edge) =>
         edge.id === oldEdge.id
@@ -186,7 +190,7 @@ export default function MindMapFlow({ mindMap }) {
     );
     }, []);
 
-  const handleAddNode = useCallback(() => { // ADDED: lets user create a new node manually
+  const handleAddNode = useCallback(() => { 
     const id = `node-${nextId}`;
 
     setNodes((prev) => [
@@ -207,8 +211,8 @@ export default function MindMapFlow({ mindMap }) {
           textColor: "#e2e8f0",
           borderColor: "#475569",
           fontSize: 14,
-          onLabelChange: handleLabelChange, // ADDED
-          onDelete: handleDeleteNode, // ADDED
+          onLabelChange: handleLabelChange, 
+          onDelete: handleDeleteNode, 
         },
       },
     ]);
@@ -270,7 +274,7 @@ export default function MindMapFlow({ mindMap }) {
         </select>
 
         <button
-          onClick={handleAddNode} // ADDED: creates a new editable node
+          onClick={handleAddNode} 
           className="rounded-xl bg-cyan-400 px-4 py-2 text-sm font-semibold text-slate-950"
           type="button"
         >
@@ -294,20 +298,20 @@ export default function MindMapFlow({ mindMap }) {
       >
         <Background color="#334155" gap={16} />
         <MiniMap
-            nodeColor={(node) => node.data?.color || "#06b6d4"} // ADDED
-            nodeStrokeColor="#1e293b" // ADDED
-            nodeBorderRadius={4} // ADDED
+            nodeColor={(node) => node.data?.color || "#06b6d4"} 
+            nodeStrokeColor="#1e293b" 
+            nodeBorderRadius={4} 
             style={{
-            backgroundColor: "#020617", // ADDED
-            border: "1px solid #334155", // ADDED
+            backgroundColor: "#020617", 
+            border: "1px solid #334155",
             }}
         />
 
         <Controls
             style={{
-            background: "#020617", // ADDED
-            border: "1px solid #334155", // ADDED
-            color: "#9fa9b5", // ADDED
+            background: "#020617",
+            border: "1px solid #334155",
+            color: "#9fa9b5", 
             }}
         />
 
