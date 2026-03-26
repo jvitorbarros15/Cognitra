@@ -246,6 +246,104 @@ export default function HomePage() {
 
   const totalLectures = classes.reduce((sum, item) => sum + (item.lectures || 0), 0);
 
+  const fileInputRef = useRef(null);
+  const mediaRecorderRef = useRef(null);
+  const chunksRef = useRef([]);
+
+  // ADDED: state for recording, processing, errors, and transcript result
+  const [isRecording, setIsRecording] = useState(false);
+  const [isProcessing, setIsProcessing] = useState(false);
+  const [error, setError] = useState("");
+  const [transcript, setTranscript] = useState("");
+
+  // ADDED: helper to send uploaded or recorded audio to backend route
+  async function sendAudioToBackend(file) {
+    try {
+      setError("");
+      setTranscript("");
+      setIsProcessing(true);
+
+      const formData = new FormData();
+      formData.append("file", file);
+
+      const res = await fetch("/api/transcribe", {
+        method: "POST",
+        body: formData,
+      });
+
+      const data = await res.json();
+
+      if (!res.ok) {
+        throw new Error(data.error || "Failed to transcribe audio");
+      }
+
+      setTranscript(data.text || "");
+    } catch (err) {
+      setError(err.message || "Something went wrong");
+    } finally {
+      setIsProcessing(false);
+    }
+  }
+
+  // opens hidden file picker when upload button is clicked
+  function handleUploadClick() {
+    if (fileInputRef.current) {
+      fileInputRef.current.click();
+    }
+  }
+
+  // handles selected file from upload button
+  async function handleFileChange(e) {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    await sendAudioToBackend(file);
+
+    //  reset input so the same file can be selected again later
+    e.target.value = "";
+  }
+
+  async function handleRecordClick() {
+    if (isRecording) {
+      mediaRecorderRef.current?.stop();
+      setIsRecording(false);
+      return;
+    }
+
+    try {
+      setError("");
+      setTranscript("");
+
+      const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+      const recorder = new MediaRecorder(stream);
+
+      mediaRecorderRef.current = recorder;
+      chunksRef.current = [];
+
+      recorder.ondataavailable = (event) => {
+        if (event.data.size > 0) {
+          chunksRef.current.push(event.data);
+        }
+      };
+
+      recorder.onstop = async () => {
+        const audioBlob = new Blob(chunksRef.current, { type: "audio/webm" });
+        const audioFile = new File([audioBlob], "lecture-recording.webm", {
+          type: "audio/webm",
+        });
+
+        await sendAudioToBackend(audioFile);
+
+        stream.getTracks().forEach((track) => track.stop());
+      };
+
+      recorder.start();
+      setIsRecording(true);
+    } catch (err) {
+      setError("Could not access microphone.");
+    }
+  }
+
   return (
     <main className="min-h-screen bg-slate-950 text-white">
       <div className="absolute inset-0 overflow-hidden">
@@ -477,20 +575,19 @@ export default function HomePage() {
               </p>
 
               <div className="mt-6 grid gap-4">
-                {/* RECORD BUTTON */}
-                <button
-                  onClick={handleRecordClick}
+                <button 
                   className="group rounded-3xl border border-cyan-400/20 bg-gradient-to-r from-cyan-500/10 to-blue-500/10 p-5 text-left transition hover:scale-[1.01] hover:border-cyan-300/30"
+                  onClick={handleRecordClick}
                 >
                   <div className="flex items-start justify-between gap-4">
                     <div>
                       <p className="text-lg font-semibold text-white">
-                        {isRecording ? "Stop Recording" : "Record Live Lecture"}
+                        {isRecording ? "Stop Recording" : "Record Live Lecture"} 
                       </p>
                       <p className="mt-1 text-sm text-slate-300">
                         {isRecording
                           ? "Recording now. Click again when class ends."
-                          : "Start recording your professor in real time and process the lecture when class ends."}
+                          : "Start recording your professor in real time and process the lecture when class ends."} 
                       </p>
                     </div>
                     <div className="rounded-2xl bg-cyan-400/15 px-3 py-2 text-cyan-200">
@@ -499,11 +596,9 @@ export default function HomePage() {
                   </div>
                 </button>
 
-                {/* UPLOAD BUTTON */}
-                <button
+                <button 
                   onClick={handleUploadClick}
-                  className="group rounded-3xl border border-fuchsia-400/20 bg-gradient-to-r from-fuchsia-500/10 to-violet-500/10 p-5 text-left transition hover:scale-[1.01] hover:border-fuchsia-300/30"
-                >
+                  className="group rounded-3xl border border-fuchsia-400/20 bg-gradient-to-r from-fuchsia-500/10 to-violet-500/10 p-5 text-left transition hover:scale-[1.01] hover:border-fuchsia-300/30">
                   <div className="flex items-start justify-between gap-4">
                     <div>
                       <p className="text-lg font-semibold text-white">
@@ -547,7 +642,30 @@ export default function HomePage() {
                 )}
               </div>
             </div>
+            {isProcessing && (
+              <div className="rounded-3xl border border-yellow-400/20 bg-yellow-500/10 p-6 shadow-2xl backdrop-blur-xl">
+                <h2 className="text-xl font-semibold text-yellow-200">Processing Audio</h2>
+                <p className="mt-2 text-sm text-yellow-100/80">
+                  Uploading your audio and generating transcript...
+                </p>
+              </div>
+            )}
 
+            {error && (
+              <div className="rounded-3xl border border-red-400/20 bg-red-500/10 p-6 shadow-2xl backdrop-blur-xl">
+                <h2 className="text-xl font-semibold text-red-200">Something went wrong</h2>
+                <p className="mt-2 text-sm text-red-100/80">{error}</p>
+              </div>
+            )}
+
+            {transcript && (
+              <div className="rounded-3xl border border-cyan-400/20 bg-white/5 p-6 shadow-2xl backdrop-blur-xl">
+                <h2 className="text-2xl font-semibold">Transcript</h2>
+                <p className="mt-4 whitespace-pre-wrap text-sm leading-6 text-slate-300">
+                  {transcript}
+                </p>
+              </div>
+            )}
 
             <div className="rounded-3xl border border-white/10 bg-white/5 p-6 shadow-2xl backdrop-blur-xl">
               <h2 className="text-2xl font-semibold">What each class gets</h2>
