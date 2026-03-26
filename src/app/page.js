@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import {
   createUserWithEmailAndPassword,
   onAuthStateChanged,
@@ -42,6 +42,15 @@ export default function HomePage() {
   const [professor, setProfessor] = useState("");
   const [creatingClass, setCreatingClass] = useState(false);
   const [classError, setClassError] = useState("");
+
+  const fileInputRef = useRef(null);
+  const mediaRecorderRef = useRef(null);
+  const chunksRef = useRef([]);
+
+  const [isRecording, setIsRecording] = useState(false);
+  const [isProcessingAudio, setIsProcessingAudio] = useState(false);
+  const [audioError, setAudioError] = useState("");
+  const [transcript, setTranscript] = useState("");
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (firebaseUser) => {
@@ -151,6 +160,87 @@ export default function HomePage() {
       setClassError(error.message);
     } finally {
       setCreatingClass(false);
+    }
+  }
+
+    async function sendAudioToBackend(file) {
+    try {
+      setAudioError("");
+      setTranscript("");
+      setIsProcessingAudio(true);
+
+      const formData = new FormData();
+      formData.append("file", file);
+
+      const res = await fetch("/api/transcribe", {
+        method: "POST",
+        body: formData,
+      });
+
+      const data = await res.json();
+
+      if (!res.ok) {
+        throw new Error(data.error || "Failed to transcribe audio.");
+      }
+
+      setTranscript(data.text || "");
+    } catch (error) {
+      setAudioError(error.message || "Something went wrong while processing audio.");
+    } finally {
+      setIsProcessingAudio(false);
+    }
+  }
+
+  function handleUploadClick() {
+    fileInputRef.current?.click();
+  }
+
+  async function handleFileChange(e) {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    await sendAudioToBackend(file);
+    e.target.value = "";
+  }
+
+  async function handleRecordClick() {
+    if (isRecording) {
+      mediaRecorderRef.current?.stop();
+      setIsRecording(false);
+      return;
+    }
+
+    try {
+      setAudioError("");
+      setTranscript("");
+
+      const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+      const recorder = new MediaRecorder(stream);
+
+      mediaRecorderRef.current = recorder;
+      chunksRef.current = [];
+
+      recorder.ondataavailable = (event) => {
+        if (event.data.size > 0) {
+          chunksRef.current.push(event.data);
+        }
+      };
+
+      recorder.onstop = async () => {
+        const audioBlob = new Blob(chunksRef.current, { type: "audio/webm" });
+        const audioFile = new File([audioBlob], "lecture-recording.webm", {
+          type: "audio/webm",
+        });
+
+        await sendAudioToBackend(audioFile);
+
+        stream.getTracks().forEach((track) => track.stop());
+      };
+
+      recorder.start();
+      setIsRecording(true);
+    } catch (error) {
+      setAudioError("Could not access microphone.");
     }
   }
 
@@ -387,12 +477,20 @@ export default function HomePage() {
               </p>
 
               <div className="mt-6 grid gap-4">
-                <button className="group rounded-3xl border border-cyan-400/20 bg-gradient-to-r from-cyan-500/10 to-blue-500/10 p-5 text-left transition hover:scale-[1.01] hover:border-cyan-300/30">
+                {/* RECORD BUTTON */}
+                <button
+                  onClick={handleRecordClick}
+                  className="group rounded-3xl border border-cyan-400/20 bg-gradient-to-r from-cyan-500/10 to-blue-500/10 p-5 text-left transition hover:scale-[1.01] hover:border-cyan-300/30"
+                >
                   <div className="flex items-start justify-between gap-4">
                     <div>
-                      <p className="text-lg font-semibold text-white">Record Live Lecture</p>
+                      <p className="text-lg font-semibold text-white">
+                        {isRecording ? "Stop Recording" : "Record Live Lecture"}
+                      </p>
                       <p className="mt-1 text-sm text-slate-300">
-                        Start recording your professor in real time and process the lecture when class ends.
+                        {isRecording
+                          ? "Recording now. Click again when class ends."
+                          : "Start recording your professor in real time and process the lecture when class ends."}
                       </p>
                     </div>
                     <div className="rounded-2xl bg-cyan-400/15 px-3 py-2 text-cyan-200">
@@ -401,10 +499,16 @@ export default function HomePage() {
                   </div>
                 </button>
 
-                <button className="group rounded-3xl border border-fuchsia-400/20 bg-gradient-to-r from-fuchsia-500/10 to-violet-500/10 p-5 text-left transition hover:scale-[1.01] hover:border-fuchsia-300/30">
+                {/* UPLOAD BUTTON */}
+                <button
+                  onClick={handleUploadClick}
+                  className="group rounded-3xl border border-fuchsia-400/20 bg-gradient-to-r from-fuchsia-500/10 to-violet-500/10 p-5 text-left transition hover:scale-[1.01] hover:border-fuchsia-300/30"
+                >
                   <div className="flex items-start justify-between gap-4">
                     <div>
-                      <p className="text-lg font-semibold text-white">Upload Voice Recording</p>
+                      <p className="text-lg font-semibold text-white">
+                        Upload Voice Recording
+                      </p>
                       <p className="mt-1 text-sm text-slate-300">
                         Upload an audio file and generate transcript, summary, quiz, flashcards, and mental maps.
                       </p>
@@ -414,8 +518,36 @@ export default function HomePage() {
                     </div>
                   </div>
                 </button>
+
+                {/* HIDDEN FILE INPUT */}
+                <input
+                  ref={fileInputRef}
+                  type="file"
+                  accept="audio/*"
+                  onChange={handleFileChange}
+                  className="hidden"
+                />
+
+                {/* FEEDBACK UI */}
+                {isProcessingAudio && (
+                  <p className="text-sm text-cyan-300">Processing audio...</p>
+                )}
+
+                {audioError && (
+                  <p className="text-sm text-red-400">{audioError}</p>
+                )}
+
+                {transcript && (
+                  <div className="rounded-2xl border border-white/10 bg-slate-900/60 p-4">
+                    <p className="text-sm font-semibold text-white">Transcript</p>
+                    <p className="mt-2 text-sm leading-6 text-slate-300">
+                      {transcript}
+                    </p>
+                  </div>
+                )}
               </div>
             </div>
+
 
             <div className="rounded-3xl border border-white/10 bg-white/5 p-6 shadow-2xl backdrop-blur-xl">
               <h2 className="text-2xl font-semibold">What each class gets</h2>
