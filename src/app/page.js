@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import {
   createUserWithEmailAndPassword,
   onAuthStateChanged,
@@ -43,6 +43,8 @@ export default function HomePage() {
   const [creatingClass, setCreatingClass] = useState(false);
   const [classError, setClassError] = useState("");
 
+  const [classesError, setClassesError] = useState("");
+
   const fileInputRef = useRef(null);
   const mediaRecorderRef = useRef(null);
   const chunksRef = useRef([]);
@@ -69,6 +71,8 @@ export default function HomePage() {
 
     setLoadingClasses(true);
 
+    setClassesError("");
+
     const q = query(
       collection(db, "users", user.uid, "classes"),
       orderBy("createdAt", "desc")
@@ -92,13 +96,24 @@ export default function HomePage() {
         setClasses(items);
         setLoadingClasses(false);
       },
-      () => {
+
+      (error) => {
+        console.error("Firestore snapshot error:", error);
+        setClassesError("Failed to load classes. Please refresh.");
         setLoadingClasses(false);
       }
     );
 
     return () => unsubscribe();
   }, [user]);
+
+  useEffect(() => {
+    return () => {
+      if (mediaRecorderRef.current?.state === "recording") {
+        mediaRecorderRef.current.stop();
+      }
+    };
+  }, []);
 
   async function handleEmailAuth(e) {
     e.preventDefault();
@@ -244,7 +259,10 @@ export default function HomePage() {
     }
   }
 
-  const totalLectures = classes.reduce((sum, item) => sum + (item.lectures || 0), 0);
+  const totalLectures = useMemo(
+    () => classes.reduce((sum, item) => sum + (item.lectures || 0), 0),
+    [classes]
+  );
 
   return (
     <main className="min-h-screen bg-slate-950 text-white">
@@ -415,10 +433,15 @@ export default function HomePage() {
               <div className="rounded-2xl border border-white/10 bg-slate-900/60 p-6 text-slate-300">
                 Loading classes...
               </div>
-            ) : classes.length === 0 ? (
-              <div className="rounded-2xl border border-white/10 bg-slate-900/60 p-6 text-slate-300">
-                No classes yet. Create your first class above.
+            ) : 
+            classesError ? (
+              <div className="rounded-2xl border border-red-400/20 bg-red-500/10 p-6 text-red-300">
+                {classesError}
               </div>
+              ) : classes.length === 0 ? (
+                <div className="rounded-2xl border border-white/10 bg-slate-900/60 p-6 text-slate-300">
+                  No classes yet. Create your first class above.
+                </div>
             ) : (
               <div className="grid gap-4">
                 {classes.map((course) => (
@@ -456,7 +479,7 @@ export default function HomePage() {
                           </button>
                         </Link>
 
-                        <Link href={`/classes/${course.id}`}>
+                        <Link href={`/classes/${course.id}/lecture`}>
                           <button className="rounded-2xl border border-white/10 bg-white/5 px-4 py-2 text-sm font-medium text-white transition hover:bg-white/10">
                             View Lectures
                           </button>
