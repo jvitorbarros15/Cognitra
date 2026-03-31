@@ -20,6 +20,9 @@ export default function ClassPage({ params }) {
   const { id: classId } = use(params);
   const fileInputRef = useRef(null);
 
+  const mediaRecorderRef = useRef(null);
+  const chunksRef = useRef([]);
+
   const [user, setUser] = useState(null);
   const [loadingAuth, setLoadingAuth] = useState(true);
 
@@ -34,6 +37,10 @@ export default function ClassPage({ params }) {
   const [isRecording, setIsRecording] = useState(false);
   const [recordingLectureTitle, setRecordingLectureTitle] = useState("");
   const [creatingLecture, setCreatingLecture] = useState(false);
+
+  const [isProcessingAudio, setIsProcessingAudio] = useState(false);
+  const [audioError, setAudioError] = useState("");
+  const [transcript, setTranscript] = useState("");
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (firebaseUser) => {
@@ -118,6 +125,14 @@ export default function ClassPage({ params }) {
     }
   }, [user, loadingAuth, classId]);
 
+  useEffect(() => {
+    return () => {
+      if (mediaRecorderRef.current?.state === "recording") {
+        mediaRecorderRef.current.stop();
+      }
+    };
+  }, []);
+
   const totals = useMemo(() => {
     return lectures.reduce(
       (acc, lecture) => {
@@ -164,13 +179,82 @@ export default function ClassPage({ params }) {
     fileInputRef.current?.click();
   };
 
-  const startRecording = () => {
-    setIsRecording(true);
-  };
+  async function sendAudioToBackend(file) {
+    try {
+      setAudioError("");
+      setTranscript("");
+      setIsProcessingAudio(true);
+ 
+      const formData = new FormData();
+      formData.append("file", file);
+ 
+      const res = await fetch("/api/transcribe", {
+        method: "POST",
+        body: formData,
+      });
+ 
+      const data = await res.json();
+ 
+      if (!res.ok) {
+        throw new Error(data.error || "Failed to transcribe audio.");
+      }
+ 
+      setTranscript(data.text || "");
+    } catch (error) {
+      setAudioError(error.message || "Something went wrong while processing audio.");
+    } finally {
+      setIsProcessingAudio(false);
+    }
+  }
 
-  const stopRecording = () => {
-    setIsRecording(false);
-  };
+  async function handleFileChange(e) {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    await sendAudioToBackend(file);
+    e.target.value = "";
+  }
+ 
+
+  async function handleRecordClick() {
+    if (isRecording) {
+      mediaRecorderRef.current?.stop();
+      setIsRecording(false);
+      return;
+    }
+ 
+    try {
+      setAudioError("");
+      setTranscript("");
+ 
+      const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+      const recorder = new MediaRecorder(stream);
+ 
+      mediaRecorderRef.current = recorder;
+      chunksRef.current = [];
+ 
+      recorder.ondataavailable = (event) => {
+        if (event.data.size > 0) {
+          chunksRef.current.push(event.data);
+        }
+      };
+ 
+      recorder.onstop = async () => {
+        const audioBlob = new Blob(chunksRef.current, { type: "audio/webm" });
+        const audioFile = new File([audioBlob], "lecture-recording.webm", {
+          type: "audio/webm",
+        });
+ 
+        await sendAudioToBackend(audioFile);
+ 
+        stream.getTracks().forEach((track) => track.stop());
+      };
+ 
+      recorder.start();
+      setIsRecording(true);
+    } catch (error) {
+      setAudioError("Could not access microphone.");
+    }
+  }
 
   async function createLecture() {
     if (!user?.uid) return;
@@ -515,7 +599,7 @@ export default function ClassPage({ params }) {
 
                 <div className="mt-5 grid gap-3 sm:grid-cols-2">
                   <button
-                    onClick={startRecording}
+                    onClick={handleRecordClick}
                     disabled={isRecording}
                     className="rounded-2xl bg-gradient-to-r from-cyan-400 to-blue-500 px-4 py-3 text-sm font-semibold text-slate-950 transition hover:scale-[1.01] disabled:cursor-not-allowed disabled:opacity-60"
                   >
@@ -523,7 +607,7 @@ export default function ClassPage({ params }) {
                   </button>
 
                   <button
-                    onClick={stopRecording}
+                    onClick={handleRecordClick}
                     disabled={!isRecording}
                     className="rounded-2xl border border-white/10 bg-white/5 px-4 py-3 text-sm font-semibold text-white transition hover:bg-white/10 disabled:cursor-not-allowed disabled:opacity-60"
                   >
@@ -550,8 +634,34 @@ export default function ClassPage({ params }) {
                   ref={fileInputRef}
                   type="file"
                   accept="audio/*"
+                  onChange={handleFileChange}
                   className="hidden"
                 />
+
+                {isProcessingAudio && (
+                  <div className="mt-5 rounded-2xl border border-yellow-400/20 bg-yellow-500/10 p-4">
+                    <p className="text-sm font-semibold text-yellow-200">Processing Audio</p>
+                    <p className="mt-1 text-sm text-yellow-100/80">
+                      Uploading your audio and generating transcript...
+                    </p>
+                  </div>
+                )}
+ 
+                {audioError && (
+                  <div className="mt-5 rounded-2xl border border-red-400/20 bg-red-500/10 p-4">
+                    <p className="text-sm font-semibold text-red-200">Something went wrong</p>
+                    <p className="mt-1 text-sm text-red-100/80">{audioError}</p>
+                  </div>
+                )}
+ 
+                {transcript && (
+                  <div className="mt-5 rounded-2xl border border-cyan-400/20 bg-white/5 p-4">
+                    <p className="text-sm font-semibold text-white">Transcript</p>
+                    <p className="mt-2 whitespace-pre-wrap text-sm leading-6 text-slate-300">
+                      {transcript}
+                    </p>
+                  </div>
+                )}
 
                 <div className="mt-5 rounded-2xl border border-white/10 bg-slate-950/70 p-4">
                   <p className="text-sm text-slate-300">
