@@ -12,6 +12,7 @@ import {
   orderBy,
   query,
   serverTimestamp,
+  updateDoc,
 } from "firebase/firestore";
 import { auth, db } from "@/lib/firebase";
 
@@ -180,26 +181,60 @@ export default function ClassPage({ params }) {
   };
 
   async function sendAudioToBackend(file) {
+    if (!selectedLectureId) {
+      alert("Select a lecture first before adding audio.");
+      return;
+    }
+
     try {
       setAudioError("");
       setTranscript("");
       setIsProcessingAudio(true);
- 
+
       const formData = new FormData();
       formData.append("file", file);
- 
+
       const res = await fetch("/api/transcribe", {
         method: "POST",
         body: formData,
       });
- 
+
       const data = await res.json();
- 
+
       if (!res.ok) {
         throw new Error(data.error || "Failed to transcribe audio.");
       }
- 
-      setTranscript(data.text || "");
+
+      const transcriptText = data.text || "";
+      setTranscript(transcriptText);
+
+      const lectureRef = doc(
+        db,
+        "users",
+        user.uid,
+        "classes",
+        classId,
+        "lectures",
+        selectedLectureId
+      );
+      await updateDoc(lectureRef, {
+        transcript: transcriptText,
+        status: "Processed",
+        updatedAt: serverTimestamp(),
+      });
+
+      setLectures((prev) =>
+        prev.map((l) =>
+          l.id === selectedLectureId
+            ? {
+                ...l,
+                transcript: true,
+                status: "Processed",
+                raw: { ...l.raw, transcript: transcriptText },
+              }
+            : l
+        )
+      );
     } catch (error) {
       setAudioError(error.message || "Something went wrong while processing audio.");
     } finally {
@@ -525,7 +560,7 @@ export default function ClassPage({ params }) {
 
                       <div className="flex flex-wrap gap-3">
                         <Link
-                          href={`/lecture/${lecture.id}`}
+                          href={`/lecture/${lecture.id}?classId=${classId}`}
                           className="rounded-2xl border border-white/10 bg-white/5 px-4 py-2 text-sm font-medium text-white transition hover:bg-white/10"
                         >
                           Open Lecture
@@ -535,7 +570,7 @@ export default function ClassPage({ params }) {
                           onClick={() => setSelectedLectureId(lecture.id)}
                           className="rounded-2xl border border-cyan-400/20 bg-cyan-400/10 px-4 py-2 text-sm font-medium text-cyan-200 transition hover:bg-cyan-400/20"
                         >
-                          Update Recording
+                          Add Audio
                         </button>
                       </div>
                     </div>
@@ -566,165 +601,111 @@ export default function ClassPage({ params }) {
 
           <section className="flex flex-col gap-6">
             <div className="rounded-3xl border border-white/10 bg-white/5 p-6 shadow-2xl backdrop-blur-xl">
-              <div className="flex items-start justify-between gap-4">
-                <div>
-                  <h2 className="text-2xl font-semibold">Lecture Recorder</h2>
-                  <p className="mt-2 text-sm text-slate-400">
-                    Record live inside this class, upload a new recording, or
-                    replace the audio for an existing lecture.
-                  </p>
-                </div>
+              <h2 className="text-2xl font-semibold">New Lecture</h2>
+              <p className="mt-2 text-sm text-slate-400">
+                Create a lecture, then add audio to generate its transcript.
+              </p>
 
-                <div
-                  className={`rounded-full px-3 py-1 text-xs font-semibold ${
-                    isRecording
-                      ? "border border-rose-400/20 bg-rose-400/10 text-rose-200"
-                      : "border border-emerald-400/20 bg-emerald-400/10 text-emerald-200"
-                  }`}
-                >
-                  {isRecording ? "Recording Live" : "Ready"}
-                </div>
-              </div>
-
-              <div className="mt-6 rounded-3xl border border-white/10 bg-slate-900/60 p-5">
+              <div className="mt-5 rounded-3xl border border-white/10 bg-slate-900/60 p-5">
                 <label className="text-sm font-medium text-slate-300">
                   Lecture title
                 </label>
                 <input
                   value={recordingLectureTitle}
                   onChange={(e) => setRecordingLectureTitle(e.target.value)}
+                  onKeyDown={(e) => e.key === "Enter" && createLecture()}
                   placeholder="Ex: Backpropagation and Training"
                   className="mt-2 w-full rounded-2xl border border-white/10 bg-slate-950/80 px-4 py-3 text-sm text-white outline-none transition placeholder:text-slate-500 focus:border-cyan-400/40"
                 />
-
-                <div className="mt-5 grid gap-3 sm:grid-cols-2">
-                  <button
-                    onClick={handleRecordClick}
-                    disabled={isRecording}
-                    className="rounded-2xl bg-gradient-to-r from-cyan-400 to-blue-500 px-4 py-3 text-sm font-semibold text-slate-950 transition hover:scale-[1.01] disabled:cursor-not-allowed disabled:opacity-60"
-                  >
-                    Start Recording
-                  </button>
-
-                  <button
-                    onClick={handleRecordClick}
-                    disabled={!isRecording}
-                    className="rounded-2xl border border-white/10 bg-white/5 px-4 py-3 text-sm font-semibold text-white transition hover:bg-white/10 disabled:cursor-not-allowed disabled:opacity-60"
-                  >
-                    Stop Recording
-                  </button>
-
-                  <button
-                    onClick={triggerUpload}
-                    className="rounded-2xl border border-fuchsia-400/20 bg-fuchsia-400/10 px-4 py-3 text-sm font-semibold text-fuchsia-200 transition hover:bg-fuchsia-400/20"
-                  >
-                    Upload Recording
-                  </button>
-
-                  <button
-                    onClick={createLecture}
-                    disabled={creatingLecture}
-                    className="rounded-2xl border border-emerald-400/20 bg-emerald-400/10 px-4 py-3 text-sm font-semibold text-emerald-200 transition hover:bg-emerald-400/20 disabled:cursor-not-allowed disabled:opacity-60"
-                  >
-                    {creatingLecture ? "Creating..." : "Create Lecture"}
-                  </button>
-                </div>
-
-                <input
-                  ref={fileInputRef}
-                  type="file"
-                  accept="audio/*"
-                  onChange={handleFileChange}
-                  className="hidden"
-                />
-
-                {isProcessingAudio && (
-                  <div className="mt-5 rounded-2xl border border-yellow-400/20 bg-yellow-500/10 p-4">
-                    <p className="text-sm font-semibold text-yellow-200">Processing Audio</p>
-                    <p className="mt-1 text-sm text-yellow-100/80">
-                      Uploading your audio and generating transcript...
-                    </p>
-                  </div>
-                )}
- 
-                {audioError && (
-                  <div className="mt-5 rounded-2xl border border-red-400/20 bg-red-500/10 p-4">
-                    <p className="text-sm font-semibold text-red-200">Something went wrong</p>
-                    <p className="mt-1 text-sm text-red-100/80">{audioError}</p>
-                  </div>
-                )}
- 
-                {transcript && (
-                  <div className="mt-5 rounded-2xl border border-cyan-400/20 bg-white/5 p-4">
-                    <p className="text-sm font-semibold text-white">Transcript</p>
-                    <p className="mt-2 whitespace-pre-wrap text-sm leading-6 text-slate-300">
-                      {transcript}
-                    </p>
-                  </div>
-                )}
-
-                <div className="mt-5 rounded-2xl border border-white/10 bg-slate-950/70 p-4">
-                  <p className="text-sm text-slate-300">
-                    {isRecording
-                      ? "Your lecture is currently being captured. Later, you can connect this to MediaRecorder and save the audio to Firebase Storage."
-                      : "Create a lecture first, then attach or record audio and generate transcript, summary, flashcards, quizzes, and mind maps."}
-                  </p>
-                </div>
+                <button
+                  onClick={createLecture}
+                  disabled={creatingLecture || !recordingLectureTitle.trim()}
+                  className="mt-4 w-full rounded-2xl bg-gradient-to-r from-cyan-400 to-blue-500 px-4 py-3 text-sm font-semibold text-slate-950 transition hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-60"
+                >
+                  {creatingLecture ? "Creating..." : "Create Lecture"}
+                </button>
               </div>
             </div>
 
             <div className="rounded-3xl border border-white/10 bg-white/5 p-6 shadow-2xl backdrop-blur-xl">
-              <h2 className="text-2xl font-semibold">Update a Recording</h2>
-              <p className="mt-2 text-sm text-slate-400">
-                Select a lecture to replace its audio with a cleaner or newer
-                recording.
-              </p>
-
-              <div className="mt-5 space-y-3">
-                {lectures.map((lecture) => (
-                  <button
-                    key={lecture.id}
-                    onClick={() => setSelectedLectureId(lecture.id)}
-                    className={`w-full rounded-2xl border px-4 py-4 text-left transition ${
-                      selectedLectureId === lecture.id
-                        ? "border-cyan-400/30 bg-cyan-400/10"
-                        : "border-white/10 bg-slate-900/60 hover:bg-slate-900/80"
-                    }`}
-                  >
-                    <div className="flex items-center justify-between gap-4">
-                      <div>
-                        <p className="font-semibold text-white">
-                          {lecture.title}
-                        </p>
-                        <p className="mt-1 text-sm text-slate-400">
-                          {lecture.date} · {lecture.duration}
-                        </p>
-                      </div>
-                      <span className="text-xs text-slate-400">
-                        {selectedLectureId === lecture.id ? "Selected" : "Choose"}
-                      </span>
-                    </div>
-                  </button>
-                ))}
+              <div className="flex items-start justify-between gap-4">
+                <div>
+                  <h2 className="text-2xl font-semibold">Add Audio</h2>
+                  <p className="mt-2 text-sm text-slate-400">
+                    {selectedLecture
+                      ? `Attaching audio to: ${selectedLecture.title}`
+                      : "Select a lecture from the list to add audio."}
+                  </p>
+                </div>
+                {isRecording && (
+                  <span className="rounded-full border border-rose-400/20 bg-rose-400/10 px-3 py-1 text-xs font-semibold text-rose-200">
+                    Recording
+                  </span>
+                )}
               </div>
 
-              {selectedLecture && (
-                <div className="mt-5 rounded-2xl border border-white/10 bg-slate-900/60 p-4">
-                  <p className="text-sm text-slate-400">Selected lecture</p>
-                  <p className="mt-1 text-lg font-semibold text-white">
-                    {selectedLecture.title}
-                  </p>
-                  <div className="mt-4 flex flex-wrap gap-3">
+              {selectedLecture ? (
+                <div className="mt-5 rounded-3xl border border-white/10 bg-slate-900/60 p-5">
+                  <div className="grid gap-3 sm:grid-cols-2">
+                    <button
+                      onClick={handleRecordClick}
+                      disabled={isProcessingAudio}
+                      className={`rounded-2xl px-4 py-3 text-sm font-semibold transition disabled:cursor-not-allowed disabled:opacity-60 ${
+                        isRecording
+                          ? "border border-rose-400/30 bg-rose-400/10 text-rose-200 hover:bg-rose-400/20"
+                          : "bg-gradient-to-r from-cyan-400 to-blue-500 text-slate-950 hover:opacity-90"
+                      }`}
+                    >
+                      {isRecording ? "Stop Recording" : "Start Recording"}
+                    </button>
+
                     <button
                       onClick={triggerUpload}
-                      className="rounded-2xl border border-white/10 bg-white/5 px-4 py-2 text-sm font-medium text-white transition hover:bg-white/10"
+                      disabled={isRecording || isProcessingAudio}
+                      className="rounded-2xl border border-fuchsia-400/20 bg-fuchsia-400/10 px-4 py-3 text-sm font-semibold text-fuchsia-200 transition hover:bg-fuchsia-400/20 disabled:cursor-not-allowed disabled:opacity-60"
                     >
-                      Upload New Audio
-                    </button>
-                    <button className="rounded-2xl border border-cyan-400/20 bg-cyan-400/10 px-4 py-2 text-sm font-medium text-cyan-200 transition hover:bg-cyan-400/20">
-                      Reprocess Lecture
+                      Upload Audio File
                     </button>
                   </div>
+
+                  <input
+                    ref={fileInputRef}
+                    type="file"
+                    accept="audio/*"
+                    onChange={handleFileChange}
+                    className="hidden"
+                  />
+
+                  {isProcessingAudio && (
+                    <div className="mt-4 rounded-2xl border border-yellow-400/20 bg-yellow-500/10 p-4">
+                      <p className="text-sm font-semibold text-yellow-200">Transcribing audio...</p>
+                      <p className="mt-1 text-xs text-yellow-100/80">
+                        This may take a moment depending on length.
+                      </p>
+                    </div>
+                  )}
+
+                  {audioError && (
+                    <div className="mt-4 rounded-2xl border border-red-400/20 bg-red-500/10 p-4">
+                      <p className="text-sm font-semibold text-red-200">Error</p>
+                      <p className="mt-1 text-xs text-red-100/80">{audioError}</p>
+                    </div>
+                  )}
+
+                  {transcript && (
+                    <div className="mt-4 rounded-2xl border border-emerald-400/20 bg-emerald-400/10 p-4">
+                      <p className="text-sm font-semibold text-emerald-200">Transcript saved</p>
+                      <p className="mt-2 line-clamp-4 text-xs leading-5 text-slate-300">
+                        {transcript}
+                      </p>
+                    </div>
+                  )}
+                </div>
+              ) : (
+                <div className="mt-5 rounded-2xl border border-white/10 bg-slate-900/60 p-5 text-center">
+                  <p className="text-sm text-slate-500">
+                    Click <span className="text-slate-300">Add Audio</span> on any lecture in the list to select it here.
+                  </p>
                 </div>
               )}
             </div>
