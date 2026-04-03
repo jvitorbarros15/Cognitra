@@ -1,11 +1,12 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useState } from "react";
 import { onAuthStateChanged } from "firebase/auth";
 import {
   addDoc,
   collection,
+  getDocs,
   onSnapshot,
   orderBy,
   query,
@@ -27,6 +28,7 @@ export default function HomePage() {
   const [loadingAuth, setLoadingAuth] = useState(true);
   const [loadingClasses, setLoadingClasses] = useState(false);
   const [classesError, setClassesError] = useState("");
+  const [totals, setTotals] = useState({ lectures: 0, flashcards: 0, mindMaps: 0 });
 
   const [className, setClassName] = useState("");
   const [professor, setProfessor] = useState("");
@@ -57,18 +59,39 @@ export default function HomePage() {
 
     const unsubscribe = onSnapshot(
       q,
-      (snapshot) => {
-        const items = snapshot.docs.map((doc, index) => {
+      async (snapshot) => {
+        const classDocs = snapshot.docs.map((doc, index) => {
           const data = doc.data();
           return {
             id: doc.id,
             name: data.name || "Untitled Class",
             professor: data.professor || "No professor",
-            lectures: data.lectures || 0,
             color: gradients[index % gradients.length],
           };
         });
-        setClasses(items);
+
+        const lectureSnapshots = await Promise.all(
+          classDocs.map((c) =>
+            getDocs(collection(db, "users", user.uid, "classes", c.id, "lectures"))
+          )
+        );
+
+        let totalFlashcards = 0;
+        let totalMindMaps = 0;
+        lectureSnapshots.forEach((snap) => {
+          snap.docs.forEach((d) => {
+            const data = d.data();
+            totalFlashcards += Array.isArray(data.flashcards) ? data.flashcards.length : 0;
+            totalMindMaps += data.mindmapData?.root ? 1 : 0;
+          });
+        });
+
+        setTotals({
+          lectures: lectureSnapshots.reduce((s, snap) => s + snap.size, 0),
+          flashcards: totalFlashcards,
+          mindMaps: totalMindMaps,
+        });
+        setClasses(classDocs.map((c, i) => ({ ...c, lectures: lectureSnapshots[i].size })));
         setLoadingClasses(false);
       },
       (error) => {
@@ -107,10 +130,6 @@ export default function HomePage() {
     }
   }
 
-  const totalLectures = useMemo(
-    () => classes.reduce((sum, c) => sum + (c.lectures || 0), 0),
-    [classes]
-  );
 
   return (
     <main className="min-h-screen bg-slate-950 text-white">
@@ -130,11 +149,11 @@ export default function HomePage() {
               </p>
             </div>
 
-            <div className="grid grid-cols-2 gap-3 sm:grid-cols-4 lg:grid-cols-2 xl:grid-cols-4">
+            <div className="grid shrink-0 grid-cols-2 gap-3">
               <StatCard label="Classes" value={classes.length} />
-              <StatCard label="Lectures" value={totalLectures} />
-              <StatCard label="Flashcards" value={0} />
-              <StatCard label="Mind Maps" value={0} />
+              <StatCard label="Lectures" value={totals.lectures} />
+              <StatCard label="Flashcards" value={totals.flashcards} />
+              <StatCard label="Mind Maps" value={totals.mindMaps} />
             </div>
           </div>
         </header>

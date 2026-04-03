@@ -90,11 +90,8 @@ export default function NavBar() {
             </div>
           </Link>
 
-          <nav className="hidden items-center gap-6 text-sm text-slate-300 md:flex">
-            <Link href="/" className="transition hover:text-white">Home</Link>
-          </nav>
-
           <div className="flex items-center gap-3">
+            <Link href="/" className="text-sm text-slate-300 transition hover:text-white">Home</Link>
             {loadingAuth ? (
               <div className="h-8 w-20 animate-pulse rounded-2xl bg-white/10" />
             ) : user ? (

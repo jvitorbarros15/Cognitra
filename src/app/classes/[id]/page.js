@@ -9,6 +9,7 @@ import {
   doc,
   getDoc,
   getDocs,
+  increment,
   orderBy,
   query,
   serverTimestamp,
@@ -335,6 +336,10 @@ export default function ClassPage({ params }) {
       };
 
       const lectureRef = await addDoc(lecturesRef, newLecture);
+
+      await updateDoc(doc(db, "users", user.uid, "classes", classId), {
+        lectures: increment(1),
+      });
 
       const lectureForUi = {
         id: lectureRef.id,
