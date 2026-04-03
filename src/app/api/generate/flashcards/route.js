@@ -32,6 +32,7 @@ Use exactly this structure:
 }
 
 Rules:
+- Respond in the same language as the transcript
 - Generate between 8 and 20 flashcards depending on how much content there is
 - Front should be a concise question or key term
 - Back should be a clear, short answer or definition (1-3 sentences max)

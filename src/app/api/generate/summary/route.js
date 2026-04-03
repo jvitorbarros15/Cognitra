@@ -30,6 +30,7 @@ Use exactly this structure:
 }
 
 Rules:
+- Respond in the same language as the transcript
 - Keep it academic and clear
 - keyPoints should have 4 to 8 items
 - Each key point is one concise sentence

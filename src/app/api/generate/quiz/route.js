@@ -31,6 +31,7 @@ Use exactly this structure:
 }
 
 Rules:
+- Respond in the same language as the transcript
 - Generate between 5 and 15 questions depending on how much content there is
 - Each question must have exactly 4 options
 - The answer field must exactly match one of the options

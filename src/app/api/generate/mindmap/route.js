@@ -42,6 +42,7 @@ Use exactly this structure:
 Rules:
 - Keep labels short
 - Use concepts, not full sentences
+- Respond in the same language as the transcript
 - Capture the real hierarchy of the lecture
 - Create 3 to 6 major branches if possible
 - Each major branch can have 1 to 5 children
