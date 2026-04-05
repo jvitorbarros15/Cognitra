@@ -91,7 +91,7 @@ export default function NavBar() {
           </Link>
 
           <div className="flex items-center gap-3">
-            <Link href="/" className="text-sm text-zinc-400 transition hover:text-zinc-100">Home</Link>
+            <Link href="/" className="rounded-lg border border-zinc-700 bg-zinc-900 px-4 py-2 text-sm font-medium text-zinc-300 transition hover:bg-zinc-800">Home</Link>
             {loadingAuth ? (
               <div className="h-8 w-20 animate-pulse rounded-lg bg-zinc-800" />
             ) : user ? (

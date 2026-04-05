@@ -377,12 +377,15 @@ export default function ClassPage({ params }) {
                           <StatusPill status={lecture.status} />
                         </div>
                         <p className="mt-1.5 text-sm text-zinc-400">{lecture.date} · {lecture.duration}</p>
-                        <div className="mt-3 flex flex-wrap gap-2">
-                          <MiniBadge label={`${lecture.transcript ? 1 : 0} Transcript`} />
-                          <MiniBadge label={`${lecture.summary ? 1 : 0} Summary`} />
-                          <MiniBadge label={`${lecture.flashcards} Flashcards`} />
-                          <MiniBadge label={`${lecture.quizzes} Quizzes`} />
-                          <MiniBadge label={`${lecture.mindMaps} Mind Map`} />
+                        <div className="mt-3 flex flex-wrap items-center gap-1.5">
+                          <PipelineStep label="Audio" done={lecture.hasRecording} />
+                          <span className="text-xs text-zinc-700">→</span>
+                          <PipelineStep label="Transcript" done={lecture.transcript} />
+                          <span className="text-xs text-zinc-700">→</span>
+                          <PipelineStep label="Summary" done={lecture.summary} />
+                          <PipelineStep label="Flashcards" done={lecture.flashcards > 0} />
+                          <PipelineStep label="Quiz" done={lecture.quizzes > 0} />
+                          <PipelineStep label="Mind Map" done={lecture.mindMaps > 0} />
                         </div>
                       </div>
 
@@ -402,12 +405,6 @@ export default function ClassPage({ params }) {
                       </div>
                     </div>
 
-                    <div className="mt-4 grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
-                      <FeatureCard title="Summary" text="Open the lecture summary and review the main takeaways." />
-                      <FeatureCard title="Flashcards" text="Study core concepts with generated cards." />
-                      <FeatureCard title="Quiz" text="Test yourself with questions and explanations." />
-                      <FeatureCard title="Mind Map" text="Visualize the lecture structure and edit connections." />
-                    </div>
                   </div>
                 ))
               )}
@@ -547,18 +544,16 @@ function StatusPill({ status }) {
   );
 }
 
-function MiniBadge({ label }) {
+function PipelineStep({ label, done }) {
   return (
-    <span className="rounded-full border border-zinc-600 bg-zinc-700 px-3 py-1 text-xs text-zinc-300">{label}</span>
-  );
-}
-
-function FeatureCard({ title, text }) {
-  return (
-    <div className="rounded-xl border border-zinc-700 bg-zinc-900 p-4">
-      <p className="font-semibold text-zinc-50">{title}</p>
-      <p className="mt-1.5 text-sm leading-6 text-zinc-400">{text}</p>
-    </div>
+    <span className={`flex items-center gap-1.5 rounded-full border px-2.5 py-1 text-xs font-medium ${
+      done
+        ? "border-emerald-500/20 bg-emerald-500/10 text-emerald-400"
+        : "border-zinc-700 bg-zinc-900 text-zinc-500"
+    }`}>
+      <span className={`h-1.5 w-1.5 rounded-full ${done ? "bg-emerald-400" : "bg-zinc-600"}`} />
+      {label}
+    </span>
   );
 }
 

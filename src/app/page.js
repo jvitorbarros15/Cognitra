@@ -82,7 +82,23 @@ export default function HomePage() {
           flashcards: totalFlashcards,
           mindMaps: totalMindMaps,
         });
-        setClasses(classDocs.map((c, i) => ({ ...c, lectures: lectureSnapshots[i].size })));
+
+        setClasses(
+          classDocs.map((c, i) => {
+            const snap = lectureSnapshots[i];
+            const withTranscript = snap.docs.filter((d) => !!d.data().transcript).length;
+            const withMaterials = snap.docs.filter((d) => {
+              const data = d.data();
+              return (
+                data.summary ||
+                (Array.isArray(data.flashcards) && data.flashcards.length > 0) ||
+                (Array.isArray(data.quizQuestions) && data.quizQuestions.length > 0) ||
+                data.mindmapData?.root
+              );
+            }).length;
+            return { ...c, lectures: snap.size, withTranscript, withMaterials };
+          })
+        );
         setLoadingClasses(false);
       },
       (error) => {
@@ -135,7 +151,7 @@ export default function HomePage() {
                 Turn every lecture into a smarter way to study.
               </h1>
               <p className="mt-4 max-w-2xl text-sm leading-6 text-zinc-400 sm:text-base">
-                Organize your classes, record live lectures, and generate summaries, flashcards, quizzes, and mind maps.
+                Record or upload lectures, then generate summaries, flashcards, quizzes, and mind maps.
               </p>
             </div>
 
@@ -153,7 +169,7 @@ export default function HomePage() {
             <div className="mb-6">
               <h2 className="text-2xl font-semibold text-zinc-50">Your Classes</h2>
               <p className="mt-1 text-sm text-zinc-400">
-                Each class stores its own lectures, summaries, flashcards, quizzes, and mind maps.
+                Track progress across all your courses — from raw recordings to full study materials.
               </p>
             </div>
 
@@ -182,24 +198,44 @@ export default function HomePage() {
                     key={course.id}
                     className="rounded-xl border border-zinc-700 bg-zinc-800 p-5 transition hover:border-zinc-600"
                   >
-                    <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-                      <div>
-                        <h3 className="text-lg font-semibold text-zinc-50">{course.name}</h3>
+                    <div className="flex items-start justify-between gap-4">
+                      <div className="min-w-0 flex-1">
+                        <h3 className="truncate text-lg font-semibold text-zinc-50">{course.name}</h3>
                         <p className="mt-0.5 text-sm text-zinc-400">{course.professor}</p>
                       </div>
-                      <span className="w-fit rounded-full border border-violet-500/20 bg-violet-500/10 px-3 py-1 text-xs font-medium text-violet-400">
-                        {course.lectures} lectures
+                      <Link
+                        href={`/classes/${course.id}`}
+                        className="shrink-0 rounded-lg border border-zinc-600 bg-zinc-700 px-4 py-2 text-sm font-medium text-zinc-200 transition hover:bg-zinc-600"
+                      >
+                        Open →
+                      </Link>
+                    </div>
+
+                    <div className="mt-4 flex flex-wrap items-center gap-x-4 gap-y-1 text-xs text-zinc-400">
+                      <span>
+                        <span className="font-semibold text-zinc-200">{course.lectures}</span> lectures
+                      </span>
+                      <span>
+                        <span className="font-semibold text-zinc-200">{course.withTranscript}</span> transcribed
+                      </span>
+                      <span>
+                        <span className="font-semibold text-zinc-200">{course.withMaterials}</span> with materials
                       </span>
                     </div>
 
-                    <div className="mt-4">
-                      <Link
-                        href={`/classes/${course.id}`}
-                        className="rounded-lg border border-zinc-600 bg-zinc-700 px-4 py-2 text-sm font-medium text-zinc-200 transition hover:bg-zinc-600"
-                      >
-                        Open Class
-                      </Link>
-                    </div>
+                    {course.lectures > 0 && (
+                      <div className="mt-3">
+                        <div className="h-1 w-full overflow-hidden rounded-full bg-zinc-700">
+                          <div
+                            className="h-1 rounded-full bg-violet-500 transition-all"
+                            style={{ width: `${Math.round((course.withMaterials / course.lectures) * 100)}%` }}
+                          />
+                        </div>
+                        <p className="mt-1.5 text-right text-xs text-zinc-600">
+                          {Math.round((course.withMaterials / course.lectures) * 100)}% have materials
+                        </p>
+                      </div>
+                    )}
                   </div>
                 ))}
               </div>
@@ -253,20 +289,26 @@ export default function HomePage() {
             )}
 
             <div className="rounded-2xl border border-zinc-800 bg-zinc-900 p-6 shadow-sm">
-              <h2 className="text-2xl font-semibold text-zinc-50">What you get</h2>
-              <div className="mt-5 grid gap-3 sm:grid-cols-2">
+              <h2 className="text-lg font-semibold text-zinc-50">Study pipeline</h2>
+              <p className="mt-1 text-sm text-zinc-500">Every lecture follows the same path.</p>
+              <ol className="mt-5 space-y-3">
                 {[
-                  ["Summaries", "Short and detailed overviews of each lecture."],
-                  ["Flashcards", "Quick review cards generated from the content."],
-                  ["Quizzes", "Practice questions with answers and explanations."],
-                  ["Mind Maps", "Visual concept structures for better understanding."],
-                ].map(([title, description]) => (
-                  <div key={title} className="rounded-xl border border-zinc-700 bg-zinc-800 p-4">
-                    <p className="font-semibold text-zinc-50">{title}</p>
-                    <p className="mt-1.5 text-sm leading-6 text-zinc-400">{description}</p>
-                  </div>
+                  ["Record or upload", "Capture your lecture audio directly or import a file."],
+                  ["Auto-transcribe", "Cognitra turns audio into a searchable transcript."],
+                  ["Generate materials", "Summary, flashcards, quiz, and mind map — one click each."],
+                  ["Study smarter", "Review and practice from materials built for your content."],
+                ].map(([title, desc], i) => (
+                  <li key={title} className="flex gap-3">
+                    <span className="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full border border-violet-500/30 bg-violet-500/10 text-xs font-semibold text-violet-400">
+                      {i + 1}
+                    </span>
+                    <div>
+                      <p className="text-sm font-medium text-zinc-200">{title}</p>
+                      <p className="mt-0.5 text-xs text-zinc-500">{desc}</p>
+                    </div>
+                  </li>
                 ))}
-              </div>
+              </ol>
             </div>
           </section>
         </div>

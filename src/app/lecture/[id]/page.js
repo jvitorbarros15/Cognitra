@@ -262,31 +262,43 @@ function TabShell({ title, description, hasContent, hasTranscript, isGenerating,
           <h2 className="text-xl font-semibold text-zinc-50">{title}</h2>
           <p className="mt-1 text-sm text-zinc-400">{description}</p>
         </div>
-        <button
-          onClick={onGenerate}
-          disabled={isGenerating || !hasTranscript}
-          className="shrink-0 rounded-lg border border-violet-500/20 bg-violet-500/10 px-4 py-2 text-sm font-medium text-violet-400 transition hover:bg-violet-500/20 disabled:cursor-not-allowed disabled:opacity-50"
-          title={!hasTranscript ? "Transcript required to generate content" : undefined}
-        >
-          {isGenerating ? "Generating..." : hasContent ? "Regenerate" : "Generate"}
-        </button>
+        {hasContent && (
+          <button
+            onClick={onGenerate}
+            disabled={isGenerating || !hasTranscript}
+            className="shrink-0 rounded-lg border border-zinc-700 bg-zinc-800 px-4 py-2 text-sm font-medium text-zinc-400 transition hover:bg-zinc-700 disabled:cursor-not-allowed disabled:opacity-50"
+          >
+            {isGenerating ? "Regenerating..." : "Regenerate"}
+          </button>
+        )}
       </div>
 
       {isGenerating && (
-        <div className="flex flex-col items-center gap-4 py-16 text-center">
+        <div className="flex flex-col items-center gap-4 py-20 text-center">
           <div className="h-8 w-8 animate-spin rounded-full border-2 border-violet-400 border-t-transparent" />
           <p className="text-zinc-400">Generating {title.toLowerCase()}...</p>
         </div>
       )}
 
       {!isGenerating && !hasContent && (
-        <div className="rounded-xl border border-zinc-700 bg-zinc-800 p-10 text-center">
-          <p className="text-zinc-400">No {title.toLowerCase()} generated yet.</p>
-          {hasTranscript ? (
-            <p className="mt-2 text-sm text-zinc-500">Click Generate to create one from the transcript.</p>
-          ) : (
-            <p className="mt-2 text-sm text-zinc-500">A transcript is required before generating content.</p>
-          )}
+        <div className="flex flex-col items-center gap-5 py-16 text-center">
+          <div className="rounded-2xl border border-zinc-700 bg-zinc-800 px-8 py-6">
+            <p className="font-medium text-zinc-200">No {title.toLowerCase()} yet</p>
+            <p className="mt-1 text-sm text-zinc-500">
+              {hasTranscript
+                ? "Ready to generate from your transcript."
+                : "Add a transcript first — record or upload audio in the class workspace."}
+            </p>
+            {hasTranscript && (
+              <button
+                onClick={onGenerate}
+                disabled={isGenerating}
+                className="mt-4 rounded-xl bg-violet-600 px-6 py-2.5 text-sm font-semibold text-white transition hover:bg-violet-700 disabled:opacity-60"
+              >
+                Generate {title}
+              </button>
+            )}
+          </div>
         </div>
       )}
 
