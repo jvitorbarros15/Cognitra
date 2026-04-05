@@ -11,6 +11,7 @@
   "dependencies": {
     "@langchain/core": "^1.1.31",
     "@langchain/openai": "^1.2.12",
+    "@vercel/analytics": "^2.0.1",
     "@xyflow/react": "^12.10.1",
     "axios": "^1.13.6",
     "firebase": "^12.10.0",
