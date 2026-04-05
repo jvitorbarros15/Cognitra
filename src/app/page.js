@@ -14,14 +14,6 @@ import {
 } from "firebase/firestore";
 import { auth, db } from "@/lib/firebase";
 
-const gradients = [
-  "from-cyan-500/20 to-blue-500/20",
-  "from-fuchsia-500/20 to-violet-500/20",
-  "from-emerald-500/20 to-teal-500/20",
-  "from-amber-500/20 to-orange-500/20",
-  "from-pink-500/20 to-rose-500/20",
-];
-
 export default function HomePage() {
   const [user, setUser] = useState(null);
   const [classes, setClasses] = useState([]);
@@ -60,13 +52,12 @@ export default function HomePage() {
     const unsubscribe = onSnapshot(
       q,
       async (snapshot) => {
-        const classDocs = snapshot.docs.map((doc, index) => {
+        const classDocs = snapshot.docs.map((doc) => {
           const data = doc.data();
           return {
             id: doc.id,
             name: data.name || "Untitled Class",
             professor: data.professor || "No professor",
-            color: gradients[index % gradients.length],
           };
         });
 
@@ -130,21 +121,20 @@ export default function HomePage() {
     }
   }
 
-
   return (
-    <main className="min-h-screen bg-slate-950 text-white">
+    <main className="min-h-screen bg-slate-50 text-slate-900">
       <section className="mx-auto flex min-h-[calc(100vh-65px)] w-full max-w-7xl flex-col px-6 py-10 lg:px-10">
 
-        <header className="mb-10 rounded-3xl border border-white/10 bg-white/5 p-6 shadow-2xl backdrop-blur-xl lg:p-8">
+        <header className="mb-10 rounded-2xl border border-slate-200 bg-white p-6 shadow-sm lg:p-8">
           <div className="flex flex-col gap-6 lg:flex-row lg:items-center lg:justify-between">
             <div>
-              <div className="mb-3 inline-flex items-center rounded-full border border-cyan-400/30 bg-cyan-400/10 px-3 py-1 text-xs font-medium text-cyan-200">
+              <div className="mb-3 inline-flex items-center rounded-full border border-indigo-100 bg-indigo-50 px-3 py-1 text-xs font-medium text-indigo-600">
                 Cognitra Dashboard
               </div>
-              <h1 className="text-4xl font-bold tracking-tight sm:text-5xl">
+              <h1 className="text-4xl font-bold tracking-tight text-slate-900 sm:text-5xl">
                 Turn every lecture into a smarter way to study.
               </h1>
-              <p className="mt-4 max-w-2xl text-sm leading-6 text-slate-300 sm:text-base">
+              <p className="mt-4 max-w-2xl text-sm leading-6 text-slate-500 sm:text-base">
                 Organize your classes, record live lectures, and generate summaries, flashcards, quizzes, and mind maps.
               </p>
             </div>
@@ -159,58 +149,56 @@ export default function HomePage() {
         </header>
 
         <div className="grid flex-1 gap-8 lg:grid-cols-[1.15fr_0.85fr]">
-          <section className="rounded-3xl border border-white/10 bg-white/5 p-6 shadow-2xl backdrop-blur-xl">
+          <section className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
             <div className="mb-6">
-              <h2 className="text-2xl font-semibold">Your Classes</h2>
-              <p className="mt-1 text-sm text-slate-400">
+              <h2 className="text-2xl font-semibold text-slate-900">Your Classes</h2>
+              <p className="mt-1 text-sm text-slate-500">
                 Each class stores its own lectures, summaries, flashcards, quizzes, and mind maps.
               </p>
             </div>
 
             {loadingAuth || loadingClasses ? (
-              <div className="rounded-2xl border border-white/10 bg-slate-900/60 p-6 text-slate-400">
+              <div className="rounded-xl border border-slate-200 bg-slate-50 p-6 text-slate-500">
                 Loading...
               </div>
             ) : !user ? (
-              <div className="rounded-2xl border border-white/10 bg-slate-900/60 p-8 text-center">
-                <p className="text-slate-300">Sign in to view and manage your classes.</p>
+              <div className="rounded-xl border border-slate-200 bg-slate-50 p-8 text-center">
+                <p className="text-slate-700">Sign in to view and manage your classes.</p>
                 <p className="mt-2 text-sm text-slate-500">Use the Sign In button in the top right.</p>
               </div>
             ) : classesError ? (
-              <div className="rounded-2xl border border-red-400/20 bg-red-500/10 p-6 text-red-300">
+              <div className="rounded-xl border border-red-200 bg-red-50 p-6 text-red-600">
                 {classesError}
               </div>
             ) : classes.length === 0 ? (
-              <div className="rounded-2xl border border-white/10 bg-slate-900/60 p-8 text-center">
-                <p className="text-slate-300">No classes yet.</p>
+              <div className="rounded-xl border border-slate-200 bg-slate-50 p-8 text-center">
+                <p className="text-slate-700">No classes yet.</p>
                 <p className="mt-2 text-sm text-slate-500">Create your first class using the panel on the right.</p>
               </div>
             ) : (
-              <div className="grid gap-4">
+              <div className="grid gap-3">
                 {classes.map((course) => (
                   <div
                     key={course.id}
-                    className={`rounded-3xl border border-white/10 bg-gradient-to-r ${course.color} p-[1px] transition hover:border-white/20`}
+                    className="rounded-xl border border-slate-200 bg-white p-5 transition hover:border-slate-300 hover:shadow-sm"
                   >
-                    <div className="rounded-[calc(1.5rem-1px)] bg-slate-950/90 p-5">
-                      <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-                        <div>
-                          <h3 className="text-xl font-semibold text-white">{course.name}</h3>
-                          <p className="mt-1 text-sm text-slate-400">{course.professor}</p>
-                        </div>
-                        <span className="w-fit rounded-full border border-cyan-400/20 bg-cyan-400/10 px-3 py-1 text-xs text-cyan-200">
-                          {course.lectures} lectures
-                        </span>
+                    <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+                      <div>
+                        <h3 className="text-lg font-semibold text-slate-900">{course.name}</h3>
+                        <p className="mt-0.5 text-sm text-slate-500">{course.professor}</p>
                       </div>
+                      <span className="w-fit rounded-full border border-indigo-100 bg-indigo-50 px-3 py-1 text-xs font-medium text-indigo-600">
+                        {course.lectures} lectures
+                      </span>
+                    </div>
 
-                      <div className="mt-4">
-                        <Link
-                          href={`/classes/${course.id}`}
-                          className="rounded-2xl border border-white/10 bg-white/5 px-4 py-2 text-sm font-medium text-white transition hover:bg-white/10"
-                        >
-                          Open Class
-                        </Link>
-                      </div>
+                    <div className="mt-4">
+                      <Link
+                        href={`/classes/${course.id}`}
+                        className="rounded-lg border border-slate-200 bg-white px-4 py-2 text-sm font-medium text-slate-700 transition hover:bg-slate-50"
+                      >
+                        Open Class
+                      </Link>
                     </div>
                   </div>
                 ))}
@@ -220,9 +208,9 @@ export default function HomePage() {
 
           <section className="flex flex-col gap-6">
             {user ? (
-              <div className="rounded-3xl border border-white/10 bg-white/5 p-6 shadow-2xl backdrop-blur-xl">
-                <h2 className="text-2xl font-semibold">New Class</h2>
-                <p className="mt-2 text-sm text-slate-400">
+              <div className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
+                <h2 className="text-2xl font-semibold text-slate-900">New Class</h2>
+                <p className="mt-2 text-sm text-slate-500">
                   Add a course to start organizing its lectures and study materials.
                 </p>
 
@@ -233,7 +221,7 @@ export default function HomePage() {
                     value={className}
                     onChange={(e) => setClassName(e.target.value)}
                     onKeyDown={(e) => e.key === "Enter" && handleCreateClass()}
-                    className="w-full rounded-2xl border border-white/10 bg-slate-950/80 px-4 py-3 text-sm text-white outline-none transition placeholder:text-slate-500 focus:border-cyan-400/40"
+                    className="w-full rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm text-slate-900 outline-none transition placeholder:text-slate-400 focus:border-indigo-400 focus:ring-2 focus:ring-indigo-50"
                   />
                   <input
                     type="text"
@@ -241,31 +229,31 @@ export default function HomePage() {
                     value={professor}
                     onChange={(e) => setProfessor(e.target.value)}
                     onKeyDown={(e) => e.key === "Enter" && handleCreateClass()}
-                    className="w-full rounded-2xl border border-white/10 bg-slate-950/80 px-4 py-3 text-sm text-white outline-none transition placeholder:text-slate-500 focus:border-cyan-400/40"
+                    className="w-full rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm text-slate-900 outline-none transition placeholder:text-slate-400 focus:border-indigo-400 focus:ring-2 focus:ring-indigo-50"
                   />
                   <button
                     onClick={handleCreateClass}
                     disabled={creatingClass || !className.trim() || !professor.trim()}
-                    className="w-full rounded-2xl bg-gradient-to-r from-cyan-400 to-violet-500 py-3 text-sm font-semibold text-slate-950 transition hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-60"
+                    className="w-full rounded-xl bg-indigo-600 py-3 text-sm font-semibold text-white transition hover:bg-indigo-700 disabled:cursor-not-allowed disabled:opacity-60"
                   >
                     {creatingClass ? "Creating..." : "Create Class"}
                   </button>
                   {classError && (
-                    <p className="text-sm text-red-300">{classError}</p>
+                    <p className="text-sm text-red-600">{classError}</p>
                   )}
                 </div>
               </div>
             ) : (
-              <div className="rounded-3xl border border-white/10 bg-white/5 p-6 shadow-2xl backdrop-blur-xl">
-                <h2 className="text-2xl font-semibold">Get Started</h2>
-                <p className="mt-3 text-sm text-slate-400">
+              <div className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
+                <h2 className="text-2xl font-semibold text-slate-900">Get Started</h2>
+                <p className="mt-3 text-sm text-slate-500">
                   Sign in to create classes and start turning lectures into study materials.
                 </p>
               </div>
             )}
 
-            <div className="rounded-3xl border border-white/10 bg-white/5 p-6 shadow-2xl backdrop-blur-xl">
-              <h2 className="text-2xl font-semibold">What you get</h2>
+            <div className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
+              <h2 className="text-2xl font-semibold text-slate-900">What you get</h2>
               <div className="mt-5 grid gap-3 sm:grid-cols-2">
                 {[
                   ["Summaries", "Short and detailed overviews of each lecture."],
@@ -273,9 +261,9 @@ export default function HomePage() {
                   ["Quizzes", "Practice questions with answers and explanations."],
                   ["Mind Maps", "Visual concept structures for better understanding."],
                 ].map(([title, description]) => (
-                  <div key={title} className="rounded-2xl border border-white/10 bg-slate-900/60 p-4">
-                    <p className="font-semibold text-white">{title}</p>
-                    <p className="mt-2 text-sm leading-6 text-slate-400">{description}</p>
+                  <div key={title} className="rounded-xl border border-slate-200 bg-slate-50 p-4">
+                    <p className="font-semibold text-slate-900">{title}</p>
+                    <p className="mt-1.5 text-sm leading-6 text-slate-500">{description}</p>
                   </div>
                 ))}
               </div>
@@ -289,9 +277,9 @@ export default function HomePage() {
 
 function StatCard({ label, value }) {
   return (
-    <div className="rounded-2xl border border-white/10 bg-slate-900/70 p-4">
-      <p className="text-xs uppercase tracking-[0.2em] text-slate-400">{label}</p>
-      <p className="mt-2 text-2xl font-semibold">{value}</p>
+    <div className="rounded-xl border border-slate-200 bg-slate-50 p-4">
+      <p className="text-xs uppercase tracking-[0.15em] text-slate-500">{label}</p>
+      <p className="mt-2 text-2xl font-semibold text-slate-900">{value}</p>
     </div>
   );
 }
