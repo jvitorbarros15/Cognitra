@@ -1,5 +1,6 @@
 import "./globals.css";
 import NavBar from "@/components/NavBar";
+import { Analytics } from '@vercel/analytics/next';
 
 export const metadata = {
   title: "Cognitra",
@@ -22,6 +23,7 @@ export default function RootLayout({ children }) {
             <main className="flex-1">{children}</main>
           </div>
         </div>
+        <Analytics />
       </body>
     </html>
   );
