@@ -122,19 +122,19 @@ export default function HomePage() {
   }
 
   return (
-    <main className="min-h-screen bg-stone-50 text-stone-900">
+    <main className="min-h-screen bg-zinc-950 text-zinc-50">
       <section className="mx-auto flex min-h-[calc(100vh-65px)] w-full max-w-7xl flex-col px-6 py-10 lg:px-10">
 
-        <header className="mb-10 rounded-2xl border border-stone-200 bg-white p-6 shadow-sm lg:p-8">
+        <header className="mb-10 rounded-2xl border border-zinc-800 bg-zinc-900 p-6 shadow-sm lg:p-8">
           <div className="flex flex-col gap-6 lg:flex-row lg:items-center lg:justify-between">
             <div>
-              <div className="mb-3 inline-flex items-center rounded-full border border-blue-100 bg-blue-50 px-3 py-1 text-xs font-medium text-blue-600">
+              <div className="mb-3 inline-flex items-center rounded-full border border-violet-500/20 bg-violet-500/10 px-3 py-1 text-xs font-medium text-violet-400">
                 Cognitra Dashboard
               </div>
-              <h1 className="text-4xl font-bold tracking-tight text-stone-900 sm:text-5xl">
+              <h1 className="text-4xl font-bold tracking-tight text-zinc-50 sm:text-5xl">
                 Turn every lecture into a smarter way to study.
               </h1>
-              <p className="mt-4 max-w-2xl text-sm leading-6 text-stone-500 sm:text-base">
+              <p className="mt-4 max-w-2xl text-sm leading-6 text-zinc-400 sm:text-base">
                 Organize your classes, record live lectures, and generate summaries, flashcards, quizzes, and mind maps.
               </p>
             </div>
@@ -149,45 +149,45 @@ export default function HomePage() {
         </header>
 
         <div className="grid flex-1 gap-8 lg:grid-cols-[1.15fr_0.85fr]">
-          <section className="rounded-2xl border border-stone-200 bg-white p-6 shadow-sm">
+          <section className="rounded-2xl border border-zinc-800 bg-zinc-900 p-6 shadow-sm">
             <div className="mb-6">
-              <h2 className="text-2xl font-semibold text-stone-900">Your Classes</h2>
-              <p className="mt-1 text-sm text-stone-500">
+              <h2 className="text-2xl font-semibold text-zinc-50">Your Classes</h2>
+              <p className="mt-1 text-sm text-zinc-400">
                 Each class stores its own lectures, summaries, flashcards, quizzes, and mind maps.
               </p>
             </div>
 
             {loadingAuth || loadingClasses ? (
-              <div className="rounded-xl border border-stone-200 bg-stone-50 p-6 text-stone-500">
+              <div className="rounded-xl border border-zinc-700 bg-zinc-800 p-6 text-zinc-500">
                 Loading...
               </div>
             ) : !user ? (
-              <div className="rounded-xl border border-stone-200 bg-stone-50 p-8 text-center">
-                <p className="text-stone-700">Sign in to view and manage your classes.</p>
-                <p className="mt-2 text-sm text-stone-500">Use the Sign In button in the top right.</p>
+              <div className="rounded-xl border border-zinc-700 bg-zinc-800 p-8 text-center">
+                <p className="text-zinc-300">Sign in to view and manage your classes.</p>
+                <p className="mt-2 text-sm text-zinc-500">Use the Sign In button in the top right.</p>
               </div>
             ) : classesError ? (
-              <div className="rounded-xl border border-red-200 bg-red-50 p-6 text-red-600">
+              <div className="rounded-xl border border-red-500/20 bg-red-500/10 p-6 text-red-400">
                 {classesError}
               </div>
             ) : classes.length === 0 ? (
-              <div className="rounded-xl border border-stone-200 bg-stone-50 p-8 text-center">
-                <p className="text-stone-700">No classes yet.</p>
-                <p className="mt-2 text-sm text-stone-500">Create your first class using the panel on the right.</p>
+              <div className="rounded-xl border border-zinc-700 bg-zinc-800 p-8 text-center">
+                <p className="text-zinc-300">No classes yet.</p>
+                <p className="mt-2 text-sm text-zinc-500">Create your first class using the panel on the right.</p>
               </div>
             ) : (
               <div className="grid gap-3">
                 {classes.map((course) => (
                   <div
                     key={course.id}
-                    className="rounded-xl border border-stone-200 bg-white p-5 transition hover:border-stone-300 hover:shadow-sm"
+                    className="rounded-xl border border-zinc-700 bg-zinc-800 p-5 transition hover:border-zinc-600"
                   >
                     <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
                       <div>
-                        <h3 className="text-lg font-semibold text-stone-900">{course.name}</h3>
-                        <p className="mt-0.5 text-sm text-stone-500">{course.professor}</p>
+                        <h3 className="text-lg font-semibold text-zinc-50">{course.name}</h3>
+                        <p className="mt-0.5 text-sm text-zinc-400">{course.professor}</p>
                       </div>
-                      <span className="w-fit rounded-full border border-blue-100 bg-blue-50 px-3 py-1 text-xs font-medium text-blue-600">
+                      <span className="w-fit rounded-full border border-violet-500/20 bg-violet-500/10 px-3 py-1 text-xs font-medium text-violet-400">
                         {course.lectures} lectures
                       </span>
                     </div>
@@ -195,7 +195,7 @@ export default function HomePage() {
                     <div className="mt-4">
                       <Link
                         href={`/classes/${course.id}`}
-                        className="rounded-lg border border-stone-200 bg-white px-4 py-2 text-sm font-medium text-stone-700 transition hover:bg-stone-50"
+                        className="rounded-lg border border-zinc-600 bg-zinc-700 px-4 py-2 text-sm font-medium text-zinc-200 transition hover:bg-zinc-600"
                       >
                         Open Class
                       </Link>
@@ -208,9 +208,9 @@ export default function HomePage() {
 
           <section className="flex flex-col gap-6">
             {user ? (
-              <div className="rounded-2xl border border-stone-200 bg-white p-6 shadow-sm">
-                <h2 className="text-2xl font-semibold text-stone-900">New Class</h2>
-                <p className="mt-2 text-sm text-stone-500">
+              <div className="rounded-2xl border border-zinc-800 bg-zinc-900 p-6 shadow-sm">
+                <h2 className="text-2xl font-semibold text-zinc-50">New Class</h2>
+                <p className="mt-2 text-sm text-zinc-400">
                   Add a course to start organizing its lectures and study materials.
                 </p>
 
@@ -221,7 +221,7 @@ export default function HomePage() {
                     value={className}
                     onChange={(e) => setClassName(e.target.value)}
                     onKeyDown={(e) => e.key === "Enter" && handleCreateClass()}
-                    className="w-full rounded-xl border border-stone-200 bg-white px-4 py-3 text-sm text-stone-900 outline-none transition placeholder:text-stone-400 focus:border-blue-400 focus:ring-2 focus:ring-blue-50"
+                    className="w-full rounded-xl border border-zinc-700 bg-zinc-950 px-4 py-3 text-sm text-zinc-100 outline-none transition placeholder:text-zinc-500 focus:border-violet-500 focus:ring-2 focus:ring-violet-500/10"
                   />
                   <input
                     type="text"
@@ -229,31 +229,31 @@ export default function HomePage() {
                     value={professor}
                     onChange={(e) => setProfessor(e.target.value)}
                     onKeyDown={(e) => e.key === "Enter" && handleCreateClass()}
-                    className="w-full rounded-xl border border-stone-200 bg-white px-4 py-3 text-sm text-stone-900 outline-none transition placeholder:text-stone-400 focus:border-blue-400 focus:ring-2 focus:ring-blue-50"
+                    className="w-full rounded-xl border border-zinc-700 bg-zinc-950 px-4 py-3 text-sm text-zinc-100 outline-none transition placeholder:text-zinc-500 focus:border-violet-500 focus:ring-2 focus:ring-violet-500/10"
                   />
                   <button
                     onClick={handleCreateClass}
                     disabled={creatingClass || !className.trim() || !professor.trim()}
-                    className="w-full rounded-xl bg-blue-600 py-3 text-sm font-semibold text-white transition hover:bg-blue-700 disabled:cursor-not-allowed disabled:opacity-60"
+                    className="w-full rounded-xl bg-violet-600 py-3 text-sm font-semibold text-white transition hover:bg-violet-700 disabled:cursor-not-allowed disabled:opacity-60"
                   >
                     {creatingClass ? "Creating..." : "Create Class"}
                   </button>
                   {classError && (
-                    <p className="text-sm text-red-600">{classError}</p>
+                    <p className="text-sm text-red-400">{classError}</p>
                   )}
                 </div>
               </div>
             ) : (
-              <div className="rounded-2xl border border-stone-200 bg-white p-6 shadow-sm">
-                <h2 className="text-2xl font-semibold text-stone-900">Get Started</h2>
-                <p className="mt-3 text-sm text-stone-500">
+              <div className="rounded-2xl border border-zinc-800 bg-zinc-900 p-6 shadow-sm">
+                <h2 className="text-2xl font-semibold text-zinc-50">Get Started</h2>
+                <p className="mt-3 text-sm text-zinc-400">
                   Sign in to create classes and start turning lectures into study materials.
                 </p>
               </div>
             )}
 
-            <div className="rounded-2xl border border-stone-200 bg-white p-6 shadow-sm">
-              <h2 className="text-2xl font-semibold text-stone-900">What you get</h2>
+            <div className="rounded-2xl border border-zinc-800 bg-zinc-900 p-6 shadow-sm">
+              <h2 className="text-2xl font-semibold text-zinc-50">What you get</h2>
               <div className="mt-5 grid gap-3 sm:grid-cols-2">
                 {[
                   ["Summaries", "Short and detailed overviews of each lecture."],
@@ -261,9 +261,9 @@ export default function HomePage() {
                   ["Quizzes", "Practice questions with answers and explanations."],
                   ["Mind Maps", "Visual concept structures for better understanding."],
                 ].map(([title, description]) => (
-                  <div key={title} className="rounded-xl border border-stone-200 bg-stone-50 p-4">
-                    <p className="font-semibold text-stone-900">{title}</p>
-                    <p className="mt-1.5 text-sm leading-6 text-stone-500">{description}</p>
+                  <div key={title} className="rounded-xl border border-zinc-700 bg-zinc-800 p-4">
+                    <p className="font-semibold text-zinc-50">{title}</p>
+                    <p className="mt-1.5 text-sm leading-6 text-zinc-400">{description}</p>
                   </div>
                 ))}
               </div>
@@ -277,9 +277,9 @@ export default function HomePage() {
 
 function StatCard({ label, value }) {
   return (
-    <div className="rounded-xl border border-stone-200 bg-stone-50 p-4">
-      <p className="text-xs uppercase tracking-[0.15em] text-stone-500">{label}</p>
-      <p className="mt-2 text-2xl font-semibold text-stone-900">{value}</p>
+    <div className="rounded-xl border border-zinc-700 bg-zinc-800 p-4">
+      <p className="text-xs uppercase tracking-[0.15em] text-zinc-500">{label}</p>
+      <p className="mt-2 text-2xl font-semibold text-zinc-50">{value}</p>
     </div>
   );
 }
