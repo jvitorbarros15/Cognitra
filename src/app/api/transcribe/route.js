@@ -72,6 +72,13 @@ export async function POST(req) {
       const transcript = pollingRes.data;
 
       if (transcript.status === "completed") {
+        if (!transcript.text || transcript.text.trim() === "") {
+          return NextResponse.json(
+            { error: "No speech detected in the recording. Make sure your microphone is working and try speaking clearly." },
+            { status: 422 }
+          );
+        }
+
         return NextResponse.json({
           id: transcript.id,
           text: transcript.text,
@@ -83,9 +90,18 @@ export async function POST(req) {
       }
 
       if (transcript.status === "error") {
+        const isNoSpeech =
+          transcript.error?.toLowerCase().includes("no spoken audio") ||
+          transcript.error?.toLowerCase().includes("language_detection") ||
+          transcript.error?.toLowerCase().includes("does not appear to contain audio") ||
+          transcript.error?.toLowerCase().includes("transcoding failed");
         return NextResponse.json(
-          { error: transcript.error || "Transcription failed" },
-          { status: 500 }
+          {
+            error: isNoSpeech
+              ? "No speech detected in the recording. Make sure your microphone is working and try speaking clearly."
+              : transcript.error || "Transcription failed",
+          },
+          { status: 422 }
         );
       }
 

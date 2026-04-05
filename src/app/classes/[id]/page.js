@@ -207,6 +207,11 @@ export default function ClassPage({ params }) {
       }
 
       const transcriptText = data.text || "";
+
+      if (!transcriptText.trim()) {
+        throw new Error("No speech detected in the recording. Make sure your microphone is working and try speaking clearly.");
+      }
+
       setTranscript(transcriptText);
 
       const lectureRef = doc(
