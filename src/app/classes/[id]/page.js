@@ -369,9 +369,9 @@ export default function ClassPage({ params }) {
 
   if (loadingAuth || pageLoading) {
     return (
-      <main className="min-h-screen bg-slate-50 px-6 py-10 text-slate-900">
+      <main className="min-h-screen bg-stone-50 px-6 py-10 text-stone-900">
         <div className="mx-auto max-w-7xl">
-          <p className="text-slate-500">Loading class...</p>
+          <p className="text-stone-500">Loading class...</p>
         </div>
       </main>
     );
@@ -379,15 +379,15 @@ export default function ClassPage({ params }) {
 
   if (!user) {
     return (
-      <main className="min-h-screen bg-slate-50 px-6 py-10 text-slate-900">
+      <main className="min-h-screen bg-stone-50 px-6 py-10 text-stone-900">
         <div className="mx-auto max-w-5xl">
           <h1 className="text-3xl font-bold">Please log in</h1>
-          <p className="mt-3 text-slate-500">
+          <p className="mt-3 text-stone-500">
             You need to sign in before viewing your classes.
           </p>
           <Link
             href="/"
-            className="mt-6 inline-flex rounded-lg border border-slate-200 bg-white px-4 py-2 text-sm font-medium text-slate-700 transition hover:bg-slate-50"
+            className="mt-6 inline-flex rounded-lg border border-stone-200 bg-white px-4 py-2 text-sm font-medium text-stone-700 transition hover:bg-stone-50"
           >
             Back Home
           </Link>
@@ -398,13 +398,13 @@ export default function ClassPage({ params }) {
 
   if (pageError) {
     return (
-      <main className="min-h-screen bg-slate-50 px-6 py-10 text-slate-900">
+      <main className="min-h-screen bg-stone-50 px-6 py-10 text-stone-900">
         <div className="mx-auto max-w-5xl">
           <h1 className="text-3xl font-bold">Something went wrong</h1>
-          <p className="mt-3 text-slate-500">{pageError}</p>
+          <p className="mt-3 text-stone-500">{pageError}</p>
           <Link
             href="/"
-            className="mt-6 inline-flex rounded-lg border border-slate-200 bg-white px-4 py-2 text-sm font-medium text-slate-700 transition hover:bg-slate-50"
+            className="mt-6 inline-flex rounded-lg border border-stone-200 bg-white px-4 py-2 text-sm font-medium text-stone-700 transition hover:bg-stone-50"
           >
             Back Home
           </Link>
@@ -415,15 +415,15 @@ export default function ClassPage({ params }) {
 
   if (!currentClass) {
     return (
-      <main className="min-h-screen bg-slate-50 px-6 py-10 text-slate-900">
+      <main className="min-h-screen bg-stone-50 px-6 py-10 text-stone-900">
         <div className="mx-auto max-w-5xl">
           <h1 className="text-3xl font-bold">Class not found</h1>
-          <p className="mt-3 text-slate-500">
+          <p className="mt-3 text-stone-500">
             This class does not exist for your account.
           </p>
           <Link
             href="/"
-            className="mt-6 inline-flex rounded-lg border border-slate-200 bg-white px-4 py-2 text-sm font-medium text-slate-700 transition hover:bg-slate-50"
+            className="mt-6 inline-flex rounded-lg border border-stone-200 bg-white px-4 py-2 text-sm font-medium text-stone-700 transition hover:bg-stone-50"
           >
             Back Home
           </Link>
@@ -433,31 +433,31 @@ export default function ClassPage({ params }) {
   }
 
   return (
-    <main className="min-h-screen bg-slate-50 text-slate-900">
+    <main className="min-h-screen bg-stone-50 text-stone-900">
       <section className="mx-auto flex min-h-screen w-full max-w-7xl flex-col px-6 py-10 lg:px-10">
         <div className="mb-6">
           <Link
             href="/"
-            className="inline-flex rounded-lg border border-slate-200 bg-white px-4 py-2 text-sm text-slate-600 transition hover:bg-slate-50 hover:text-slate-900"
+            className="inline-flex rounded-lg border border-stone-200 bg-white px-4 py-2 text-sm text-stone-600 transition hover:bg-stone-50 hover:text-stone-900"
           >
             ← Back to Classes
           </Link>
         </div>
 
-        <header className="mb-8 rounded-2xl border border-slate-200 bg-white p-8 shadow-sm">
+        <header className="mb-8 rounded-2xl border border-stone-200 bg-white p-8 shadow-sm">
           <div className="flex flex-col gap-8 lg:flex-row lg:items-end lg:justify-between">
             <div>
-              <div className="mb-3 inline-flex items-center rounded-full border border-indigo-100 bg-indigo-50 px-3 py-1 text-xs font-medium text-indigo-600">
+              <div className="mb-3 inline-flex items-center rounded-full border border-blue-100 bg-blue-50 px-3 py-1 text-xs font-medium text-blue-600">
                 Class Workspace
               </div>
-              <h1 className="text-4xl font-bold tracking-tight text-slate-900 sm:text-5xl">
+              <h1 className="text-4xl font-bold tracking-tight text-stone-900 sm:text-5xl">
                 {currentClass.name || "Untitled Class"}
               </h1>
-              <p className="mt-3 text-base text-slate-600">
+              <p className="mt-3 text-base text-stone-600">
                 {currentClass.professor || "No professor"} ·{" "}
                 {currentClass.semester || "No semester"}
               </p>
-              <p className="mt-4 max-w-2xl text-sm leading-6 text-slate-500 sm:text-base">
+              <p className="mt-4 max-w-2xl text-sm leading-6 text-stone-500 sm:text-base">
                 Manage lecture recordings, update audio, and access every
                 transcript, summary, flashcard set, quiz, and mind map for
                 this class in one place.
@@ -476,11 +476,11 @@ export default function ClassPage({ params }) {
         </header>
 
         <div className="grid flex-1 gap-8 lg:grid-cols-[1.15fr_0.85fr]">
-          <section className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
+          <section className="rounded-2xl border border-stone-200 bg-white p-6 shadow-sm">
             <div className="mb-6 flex flex-col gap-4 xl:flex-row xl:items-center xl:justify-between">
               <div>
-                <h2 className="text-2xl font-semibold text-slate-900">Class Library</h2>
-                <p className="mt-1 text-sm text-slate-500">
+                <h2 className="text-2xl font-semibold text-stone-900">Class Library</h2>
+                <p className="mt-1 text-sm text-stone-500">
                   Switch between lectures, mental maps, summaries, flashcards,
                   and quizzes.
                 </p>
@@ -499,8 +499,8 @@ export default function ClassPage({ params }) {
                     onClick={() => setActiveView(key)}
                     className={`rounded-lg px-4 py-2 text-sm font-medium transition ${
                       activeView === key
-                        ? "bg-slate-900 text-white"
-                        : "border border-slate-200 bg-white text-slate-700 hover:bg-slate-50"
+                        ? "bg-stone-900 text-white"
+                        : "border border-stone-200 bg-white text-stone-700 hover:bg-stone-50"
                     }`}
                   >
                     {label}
@@ -511,11 +511,11 @@ export default function ClassPage({ params }) {
 
             <div className="grid gap-4">
               {filteredLectures.length === 0 ? (
-                <div className="rounded-xl border border-slate-200 bg-slate-50 p-6">
-                  <p className="text-lg font-semibold text-slate-900">
+                <div className="rounded-xl border border-stone-200 bg-stone-50 p-6">
+                  <p className="text-lg font-semibold text-stone-900">
                     No lectures yet
                   </p>
-                  <p className="mt-2 text-sm text-slate-500">
+                  <p className="mt-2 text-sm text-stone-500">
                     Create your first lecture for this class on the right panel.
                   </p>
                 </div>
@@ -523,18 +523,18 @@ export default function ClassPage({ params }) {
                 filteredLectures.map((lecture) => (
                   <div
                     key={lecture.id}
-                    className="rounded-xl border border-slate-200 bg-white p-5 transition hover:border-slate-300 hover:shadow-sm"
+                    className="rounded-xl border border-stone-200 bg-white p-5 transition hover:border-stone-300 hover:shadow-sm"
                   >
                     <div className="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
                       <div>
                         <div className="flex flex-wrap items-center gap-2">
-                          <h3 className="text-lg font-semibold text-slate-900">
+                          <h3 className="text-lg font-semibold text-stone-900">
                             {lecture.title}
                           </h3>
                           <StatusPill status={lecture.status} />
                         </div>
 
-                        <p className="mt-1.5 text-sm text-slate-500">
+                        <p className="mt-1.5 text-sm text-stone-500">
                           {lecture.date} · {lecture.duration}
                         </p>
 
@@ -554,14 +554,14 @@ export default function ClassPage({ params }) {
                       <div className="flex flex-wrap gap-3">
                         <Link
                           href={`/lecture/${lecture.id}?classId=${classId}`}
-                          className="rounded-lg border border-slate-200 bg-white px-4 py-2 text-sm font-medium text-slate-700 transition hover:bg-slate-50"
+                          className="rounded-lg border border-stone-200 bg-white px-4 py-2 text-sm font-medium text-stone-700 transition hover:bg-stone-50"
                         >
                           Open Lecture
                         </Link>
 
                         <button
                           onClick={() => setSelectedLectureId(lecture.id)}
-                          className="rounded-lg border border-indigo-100 bg-indigo-50 px-4 py-2 text-sm font-medium text-indigo-600 transition hover:bg-indigo-100"
+                          className="rounded-lg border border-blue-100 bg-blue-50 px-4 py-2 text-sm font-medium text-blue-600 transition hover:bg-blue-100"
                         >
                           Add Audio
                         </button>
@@ -593,14 +593,14 @@ export default function ClassPage({ params }) {
           </section>
 
           <section className="flex flex-col gap-6">
-            <div className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
-              <h2 className="text-2xl font-semibold text-slate-900">New Lecture</h2>
-              <p className="mt-2 text-sm text-slate-500">
+            <div className="rounded-2xl border border-stone-200 bg-white p-6 shadow-sm">
+              <h2 className="text-2xl font-semibold text-stone-900">New Lecture</h2>
+              <p className="mt-2 text-sm text-stone-500">
                 Create a lecture, then add audio to generate its transcript.
               </p>
 
-              <div className="mt-5 rounded-xl border border-slate-200 bg-slate-50 p-5">
-                <label className="text-sm font-medium text-slate-700">
+              <div className="mt-5 rounded-xl border border-stone-200 bg-stone-50 p-5">
+                <label className="text-sm font-medium text-stone-700">
                   Lecture title
                 </label>
                 <input
@@ -608,23 +608,23 @@ export default function ClassPage({ params }) {
                   onChange={(e) => setRecordingLectureTitle(e.target.value)}
                   onKeyDown={(e) => e.key === "Enter" && createLecture()}
                   placeholder="Ex: Backpropagation and Training"
-                  className="mt-2 w-full rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm text-slate-900 outline-none transition placeholder:text-slate-400 focus:border-indigo-400 focus:ring-2 focus:ring-indigo-50"
+                  className="mt-2 w-full rounded-xl border border-stone-200 bg-white px-4 py-3 text-sm text-stone-900 outline-none transition placeholder:text-stone-400 focus:border-blue-400 focus:ring-2 focus:ring-blue-50"
                 />
                 <button
                   onClick={createLecture}
                   disabled={creatingLecture || !recordingLectureTitle.trim()}
-                  className="mt-4 w-full rounded-xl bg-indigo-600 px-4 py-3 text-sm font-semibold text-white transition hover:bg-indigo-700 disabled:cursor-not-allowed disabled:opacity-60"
+                  className="mt-4 w-full rounded-xl bg-blue-600 px-4 py-3 text-sm font-semibold text-white transition hover:bg-blue-700 disabled:cursor-not-allowed disabled:opacity-60"
                 >
                   {creatingLecture ? "Creating..." : "Create Lecture"}
                 </button>
               </div>
             </div>
 
-            <div className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
+            <div className="rounded-2xl border border-stone-200 bg-white p-6 shadow-sm">
               <div className="flex items-start justify-between gap-4">
                 <div>
-                  <h2 className="text-2xl font-semibold text-slate-900">Add Audio</h2>
-                  <p className="mt-2 text-sm text-slate-500">
+                  <h2 className="text-2xl font-semibold text-stone-900">Add Audio</h2>
+                  <p className="mt-2 text-sm text-stone-500">
                     {selectedLecture
                       ? `Attaching audio to: ${selectedLecture.title}`
                       : "Select a lecture from the list to add audio."}
@@ -638,7 +638,7 @@ export default function ClassPage({ params }) {
               </div>
 
               {selectedLecture ? (
-                <div className="mt-5 rounded-xl border border-slate-200 bg-slate-50 p-5">
+                <div className="mt-5 rounded-xl border border-stone-200 bg-stone-50 p-5">
                   <div className="grid gap-3 sm:grid-cols-2">
                     <button
                       onClick={handleRecordClick}
@@ -646,7 +646,7 @@ export default function ClassPage({ params }) {
                       className={`rounded-xl px-4 py-3 text-sm font-semibold transition disabled:cursor-not-allowed disabled:opacity-60 ${
                         isRecording
                           ? "border border-red-200 bg-red-50 text-red-700 hover:bg-red-100"
-                          : "bg-indigo-600 text-white hover:bg-indigo-700"
+                          : "bg-blue-600 text-white hover:bg-blue-700"
                       }`}
                     >
                       {isRecording ? "Stop Recording" : "Start Recording"}
@@ -655,7 +655,7 @@ export default function ClassPage({ params }) {
                     <button
                       onClick={triggerUpload}
                       disabled={isRecording || isProcessingAudio}
-                      className="rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm font-semibold text-slate-700 transition hover:bg-slate-50 disabled:cursor-not-allowed disabled:opacity-60"
+                      className="rounded-xl border border-stone-200 bg-white px-4 py-3 text-sm font-semibold text-stone-700 transition hover:bg-stone-50 disabled:cursor-not-allowed disabled:opacity-60"
                     >
                       Upload Audio File
                     </button>
@@ -688,23 +688,23 @@ export default function ClassPage({ params }) {
                   {transcript && (
                     <div className="mt-4 rounded-xl border border-emerald-200 bg-emerald-50 p-4">
                       <p className="text-sm font-semibold text-emerald-800">Transcript saved</p>
-                      <p className="mt-2 line-clamp-4 text-xs leading-5 text-slate-600">
+                      <p className="mt-2 line-clamp-4 text-xs leading-5 text-stone-600">
                         {transcript}
                       </p>
                     </div>
                   )}
                 </div>
               ) : (
-                <div className="mt-5 rounded-xl border border-slate-200 bg-slate-50 p-5 text-center">
-                  <p className="text-sm text-slate-500">
-                    Click <span className="text-slate-700 font-medium">Add Audio</span> on any lecture in the list to select it here.
+                <div className="mt-5 rounded-xl border border-stone-200 bg-stone-50 p-5 text-center">
+                  <p className="text-sm text-stone-500">
+                    Click <span className="text-stone-700 font-medium">Add Audio</span> on any lecture in the list to select it here.
                   </p>
                 </div>
               )}
             </div>
 
-            <div className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
-              <h2 className="text-2xl font-semibold text-slate-900">Everything in this Class</h2>
+            <div className="rounded-2xl border border-stone-200 bg-white p-6 shadow-sm">
+              <h2 className="text-2xl font-semibold text-stone-900">Everything in this Class</h2>
               <div className="mt-5 grid gap-3 sm:grid-cols-2">
                 <OutputTile
                   title="All Lectures"
@@ -747,11 +747,11 @@ export default function ClassPage({ params }) {
 
 function StatCard({ label, value }) {
   return (
-    <div className="rounded-xl border border-slate-200 bg-slate-50 p-4">
-      <p className="text-xs uppercase tracking-[0.15em] text-slate-500">
+    <div className="rounded-xl border border-stone-200 bg-stone-50 p-4">
+      <p className="text-xs uppercase tracking-[0.15em] text-stone-500">
         {label}
       </p>
-      <p className="mt-2 text-2xl font-semibold text-slate-900">{value}</p>
+      <p className="mt-2 text-2xl font-semibold text-stone-900">{value}</p>
     </div>
   );
 }
@@ -762,7 +762,7 @@ function StatusPill({ status }) {
       ? "border-emerald-200 bg-emerald-50 text-emerald-700"
       : status === "Processing"
       ? "border-amber-200 bg-amber-50 text-amber-700"
-      : "border-slate-200 bg-slate-100 text-slate-600";
+      : "border-stone-200 bg-stone-100 text-stone-600";
 
   return (
     <span className={`rounded-full border px-3 py-1 text-xs font-medium ${styles}`}>
@@ -773,7 +773,7 @@ function StatusPill({ status }) {
 
 function MiniBadge({ label }) {
   return (
-    <span className="rounded-full border border-slate-200 bg-slate-100 px-3 py-1 text-xs text-slate-600">
+    <span className="rounded-full border border-stone-200 bg-stone-100 px-3 py-1 text-xs text-stone-600">
       {label}
     </span>
   );
@@ -781,24 +781,24 @@ function MiniBadge({ label }) {
 
 function FeatureCard({ title, text }) {
   return (
-    <div className="rounded-xl border border-slate-200 bg-slate-50 p-4">
-      <p className="font-semibold text-slate-900">{title}</p>
-      <p className="mt-1.5 text-sm leading-6 text-slate-500">{text}</p>
+    <div className="rounded-xl border border-stone-200 bg-stone-50 p-4">
+      <p className="font-semibold text-stone-900">{title}</p>
+      <p className="mt-1.5 text-sm leading-6 text-stone-500">{text}</p>
     </div>
   );
 }
 
 function OutputTile({ title, value, description }) {
   return (
-    <div className="rounded-xl border border-slate-200 bg-slate-50 p-4">
+    <div className="rounded-xl border border-stone-200 bg-stone-50 p-4">
       <div className="flex items-start justify-between gap-4">
         <div>
-          <p className="font-semibold text-slate-900">{title}</p>
-          <p className="mt-1.5 text-sm leading-6 text-slate-500">
+          <p className="font-semibold text-stone-900">{title}</p>
+          <p className="mt-1.5 text-sm leading-6 text-stone-500">
             {description}
           </p>
         </div>
-        <div className="rounded-lg border border-slate-200 bg-white px-3 py-2 text-lg font-semibold text-slate-900">
+        <div className="rounded-lg border border-stone-200 bg-white px-3 py-2 text-lg font-semibold text-stone-900">
           {value}
         </div>
       </div>

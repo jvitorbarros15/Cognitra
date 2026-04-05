@@ -121,17 +121,17 @@ function LecturePageInner({ lectureId }) {
 
   if (loadingAuth || pageLoading) {
     return (
-      <main className="min-h-screen bg-slate-50 px-6 py-10 text-slate-900">
-        <p className="text-slate-500">Loading lecture...</p>
+      <main className="min-h-screen bg-stone-50 px-6 py-10 text-stone-900">
+        <p className="text-stone-500">Loading lecture...</p>
       </main>
     );
   }
 
   if (!user) {
     return (
-      <main className="min-h-screen bg-slate-50 px-6 py-10 text-slate-900">
+      <main className="min-h-screen bg-stone-50 px-6 py-10 text-stone-900">
         <h1 className="text-3xl font-bold">Please log in</h1>
-        <Link href="/" className="mt-6 inline-flex rounded-lg border border-slate-200 bg-white px-4 py-2 text-sm text-slate-700 hover:bg-slate-50">
+        <Link href="/" className="mt-6 inline-flex rounded-lg border border-stone-200 bg-white px-4 py-2 text-sm text-stone-700 hover:bg-stone-50">
           Back Home
         </Link>
       </main>
@@ -140,10 +140,10 @@ function LecturePageInner({ lectureId }) {
 
   if (pageError) {
     return (
-      <main className="min-h-screen bg-slate-50 px-6 py-10 text-slate-900">
+      <main className="min-h-screen bg-stone-50 px-6 py-10 text-stone-900">
         <h1 className="text-3xl font-bold">Error</h1>
-        <p className="mt-3 text-slate-500">{pageError}</p>
-        <Link href="/" className="mt-6 inline-flex rounded-lg border border-slate-200 bg-white px-4 py-2 text-sm text-slate-700 hover:bg-slate-50">
+        <p className="mt-3 text-stone-500">{pageError}</p>
+        <Link href="/" className="mt-6 inline-flex rounded-lg border border-stone-200 bg-white px-4 py-2 text-sm text-stone-700 hover:bg-stone-50">
           Back Home
         </Link>
       </main>
@@ -167,32 +167,32 @@ function LecturePageInner({ lectureId }) {
   ];
 
   return (
-    <main className="min-h-screen bg-slate-50 text-slate-900">
+    <main className="min-h-screen bg-stone-50 text-stone-900">
       <div className="mx-auto max-w-5xl px-6 py-10 lg:px-10">
         <div className="mb-6 flex items-center gap-3">
           {classId && (
             <Link
               href={`/classes/${classId}`}
-              className="inline-flex rounded-lg border border-slate-200 bg-white px-4 py-2 text-sm text-slate-600 transition hover:bg-slate-50 hover:text-slate-900"
+              className="inline-flex rounded-lg border border-stone-200 bg-white px-4 py-2 text-sm text-stone-600 transition hover:bg-stone-50 hover:text-stone-900"
             >
               ← Back to Class
             </Link>
           )}
           {classData && (
-            <span className="text-sm text-slate-500">{classData.name}</span>
+            <span className="text-sm text-stone-500">{classData.name}</span>
           )}
         </div>
 
-        <header className="mb-8 rounded-2xl border border-slate-200 bg-white p-8 shadow-sm">
+        <header className="mb-8 rounded-2xl border border-stone-200 bg-white p-8 shadow-sm">
           <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
             <div>
-              <div className="mb-2 inline-flex items-center rounded-full border border-indigo-100 bg-indigo-50 px-3 py-1 text-xs font-medium text-indigo-600">
+              <div className="mb-2 inline-flex items-center rounded-full border border-blue-100 bg-blue-50 px-3 py-1 text-xs font-medium text-blue-600">
                 Lecture
               </div>
-              <h1 className="text-3xl font-bold tracking-tight text-slate-900 sm:text-4xl">
+              <h1 className="text-3xl font-bold tracking-tight text-stone-900 sm:text-4xl">
                 {lecture.title || "Untitled Lecture"}
               </h1>
-              <p className="mt-2 text-sm text-slate-500">
+              <p className="mt-2 text-sm text-stone-500">
                 {lecture.dateLabel || "No date"} · {lecture.durationLabel || "0 min"}
               </p>
             </div>
@@ -215,8 +215,8 @@ function LecturePageInner({ lectureId }) {
               onClick={() => setActiveTab(tab.key)}
               className={`relative rounded-lg px-4 py-2 text-sm font-medium transition ${
                 activeTab === tab.key
-                  ? "bg-slate-900 text-white"
-                  : "border border-slate-200 bg-white text-slate-700 hover:bg-slate-50"
+                  ? "bg-stone-900 text-white"
+                  : "border border-stone-200 bg-white text-stone-700 hover:bg-stone-50"
               }`}
             >
               {tab.label}
@@ -227,7 +227,7 @@ function LecturePageInner({ lectureId }) {
           ))}
         </div>
 
-        <div className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
+        <div className="rounded-2xl border border-stone-200 bg-white p-6 shadow-sm">
           {activeTab === "summary" && (
             <TabShell
               title="Summary"
@@ -277,7 +277,7 @@ function LecturePageInner({ lectureId }) {
               onGenerate={() => generate("mindmap")}
             >
               {hasMindmap && (
-                <div style={{ height: 600 }} className="overflow-hidden rounded-xl border border-slate-200">
+                <div style={{ height: 600 }} className="overflow-hidden rounded-xl border border-stone-200">
                   <MindMapFlow mindMap={lecture.mindmapData} />
                 </div>
               )}
@@ -286,21 +286,21 @@ function LecturePageInner({ lectureId }) {
 
           {activeTab === "transcript" && (
             <div>
-              <h2 className="mb-4 text-xl font-semibold text-slate-900">Transcript</h2>
+              <h2 className="mb-4 text-xl font-semibold text-stone-900">Transcript</h2>
               {hasTranscript ? (
-                <p className="whitespace-pre-wrap text-sm leading-7 text-slate-700">
+                <p className="whitespace-pre-wrap text-sm leading-7 text-stone-700">
                   {lecture.transcript}
                 </p>
               ) : (
-                <div className="rounded-xl border border-slate-200 bg-slate-50 p-8 text-center">
-                  <p className="text-slate-600">No transcript yet.</p>
-                  <p className="mt-2 text-sm text-slate-500">
+                <div className="rounded-xl border border-stone-200 bg-stone-50 p-8 text-center">
+                  <p className="text-stone-600">No transcript yet.</p>
+                  <p className="mt-2 text-sm text-stone-500">
                     Record or upload audio in the class workspace to generate a transcript.
                   </p>
                   {classId && (
                     <Link
                       href={`/classes/${classId}`}
-                      className="mt-4 inline-flex rounded-lg border border-slate-200 bg-white px-4 py-2 text-sm text-slate-700 hover:bg-slate-50"
+                      className="mt-4 inline-flex rounded-lg border border-stone-200 bg-white px-4 py-2 text-sm text-stone-700 hover:bg-stone-50"
                     >
                       Go to Class Workspace
                     </Link>
@@ -319,8 +319,8 @@ export default function LecturePage({ params }) {
   const { id: lectureId } = use(params);
   return (
     <Suspense fallback={
-      <main className="min-h-screen bg-slate-50 px-6 py-10 text-slate-900">
-        <p className="text-slate-500">Loading...</p>
+      <main className="min-h-screen bg-stone-50 px-6 py-10 text-stone-900">
+        <p className="text-stone-500">Loading...</p>
       </main>
     }>
       <LecturePageInner lectureId={lectureId} />
@@ -333,13 +333,13 @@ function TabShell({ title, description, hasContent, hasTranscript, isGenerating,
     <div>
       <div className="mb-6 flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
         <div>
-          <h2 className="text-xl font-semibold text-slate-900">{title}</h2>
-          <p className="mt-1 text-sm text-slate-500">{description}</p>
+          <h2 className="text-xl font-semibold text-stone-900">{title}</h2>
+          <p className="mt-1 text-sm text-stone-500">{description}</p>
         </div>
         <button
           onClick={onGenerate}
           disabled={isGenerating || !hasTranscript}
-          className="shrink-0 rounded-lg border border-indigo-200 bg-indigo-50 px-4 py-2 text-sm font-medium text-indigo-600 transition hover:bg-indigo-100 disabled:cursor-not-allowed disabled:opacity-50"
+          className="shrink-0 rounded-lg border border-blue-200 bg-blue-50 px-4 py-2 text-sm font-medium text-blue-600 transition hover:bg-blue-100 disabled:cursor-not-allowed disabled:opacity-50"
           title={!hasTranscript ? "Transcript required to generate content" : undefined}
         >
           {isGenerating ? "Generating..." : hasContent ? "Regenerate" : "Generate"}
@@ -348,18 +348,18 @@ function TabShell({ title, description, hasContent, hasTranscript, isGenerating,
 
       {isGenerating && (
         <div className="flex flex-col items-center gap-4 py-16 text-center">
-          <div className="h-8 w-8 animate-spin rounded-full border-2 border-indigo-500 border-t-transparent" />
-          <p className="text-slate-500">Generating {title.toLowerCase()}...</p>
+          <div className="h-8 w-8 animate-spin rounded-full border-2 border-blue-500 border-t-transparent" />
+          <p className="text-stone-500">Generating {title.toLowerCase()}...</p>
         </div>
       )}
 
       {!isGenerating && !hasContent && (
-        <div className="rounded-xl border border-slate-200 bg-slate-50 p-10 text-center">
-          <p className="text-slate-600">No {title.toLowerCase()} generated yet.</p>
+        <div className="rounded-xl border border-stone-200 bg-stone-50 p-10 text-center">
+          <p className="text-stone-600">No {title.toLowerCase()} generated yet.</p>
           {hasTranscript ? (
-            <p className="mt-2 text-sm text-slate-500">Click Generate to create one from the transcript.</p>
+            <p className="mt-2 text-sm text-stone-500">Click Generate to create one from the transcript.</p>
           ) : (
-            <p className="mt-2 text-sm text-slate-500">A transcript is required before generating content.</p>
+            <p className="mt-2 text-sm text-stone-500">A transcript is required before generating content.</p>
           )}
         </div>
       )}
@@ -372,26 +372,26 @@ function TabShell({ title, description, hasContent, hasTranscript, isGenerating,
 function SummaryView({ data }) {
   return (
     <div className="space-y-6">
-      <h3 className="text-2xl font-semibold text-slate-900">{data.title}</h3>
-      <p className="leading-7 text-slate-700">{data.overview}</p>
+      <h3 className="text-2xl font-semibold text-stone-900">{data.title}</h3>
+      <p className="leading-7 text-stone-700">{data.overview}</p>
       <div>
-        <p className="mb-3 text-xs font-medium uppercase tracking-widest text-slate-400">
+        <p className="mb-3 text-xs font-medium uppercase tracking-widest text-stone-400">
           Key Points
         </p>
         <ul className="space-y-2">
           {data.keyPoints?.map((point, i) => (
-            <li key={i} className="flex gap-3 text-slate-700">
-              <span className="mt-2.5 h-1.5 w-1.5 flex-shrink-0 rounded-full bg-indigo-500" />
+            <li key={i} className="flex gap-3 text-stone-700">
+              <span className="mt-2.5 h-1.5 w-1.5 flex-shrink-0 rounded-full bg-blue-500" />
               <span className="leading-7">{point}</span>
             </li>
           ))}
         </ul>
       </div>
-      <div className="rounded-xl border border-slate-200 bg-slate-50 p-5">
-        <p className="mb-2 text-xs font-medium uppercase tracking-widest text-slate-400">
+      <div className="rounded-xl border border-stone-200 bg-stone-50 p-5">
+        <p className="mb-2 text-xs font-medium uppercase tracking-widest text-stone-400">
           Conclusion
         </p>
-        <p className="leading-7 text-slate-700">{data.conclusion}</p>
+        <p className="leading-7 text-stone-700">{data.conclusion}</p>
       </div>
     </div>
   );
@@ -410,22 +410,22 @@ function FlashcardsView({ cards }) {
 
   return (
     <div className="flex flex-col items-center gap-6">
-      <p className="text-sm text-slate-500">
+      <p className="text-sm text-stone-500">
         {index + 1} / {cards.length}
       </p>
 
       <button
         onClick={() => setFlipped((f) => !f)}
-        className="w-full max-w-xl rounded-2xl border border-slate-200 bg-slate-50 p-10 text-center transition hover:border-slate-300 hover:bg-white active:scale-[0.99]"
+        className="w-full max-w-xl rounded-2xl border border-stone-200 bg-stone-50 p-10 text-center transition hover:border-stone-300 hover:bg-white active:scale-[0.99]"
         style={{ minHeight: 220 }}
       >
-        <p className="mb-4 text-xs uppercase tracking-widest text-slate-400">
+        <p className="mb-4 text-xs uppercase tracking-widest text-stone-400">
           {flipped ? "Answer" : "Question"}
         </p>
-        <p className="text-xl font-semibold leading-8 text-slate-900">
+        <p className="text-xl font-semibold leading-8 text-stone-900">
           {flipped ? cards[index].back : cards[index].front}
         </p>
-        <p className="mt-6 text-xs text-slate-400">
+        <p className="mt-6 text-xs text-stone-400">
           Click to {flipped ? "see question" : "reveal answer"}
         </p>
       </button>
@@ -434,14 +434,14 @@ function FlashcardsView({ cards }) {
         <button
           onClick={() => goTo(Math.max(0, index - 1))}
           disabled={index === 0}
-          className="rounded-lg border border-slate-200 bg-white px-5 py-2 text-sm font-medium text-slate-700 transition hover:bg-slate-50 disabled:opacity-40"
+          className="rounded-lg border border-stone-200 bg-white px-5 py-2 text-sm font-medium text-stone-700 transition hover:bg-stone-50 disabled:opacity-40"
         >
           Previous
         </button>
         <button
           onClick={() => goTo(Math.min(cards.length - 1, index + 1))}
           disabled={index === cards.length - 1}
-          className="rounded-lg border border-slate-200 bg-white px-5 py-2 text-sm font-medium text-slate-700 transition hover:bg-slate-50 disabled:opacity-40"
+          className="rounded-lg border border-stone-200 bg-white px-5 py-2 text-sm font-medium text-stone-700 transition hover:bg-stone-50 disabled:opacity-40"
         >
           Next
         </button>
@@ -453,7 +453,7 @@ function FlashcardsView({ cards }) {
             key={i}
             onClick={() => goTo(i)}
             className={`h-2 w-2 rounded-full transition ${
-              i === index ? "bg-indigo-500" : "bg-slate-300 hover:bg-slate-400"
+              i === index ? "bg-blue-500" : "bg-stone-300 hover:bg-stone-400"
             }`}
           />
         ))}
@@ -476,10 +476,10 @@ function QuizView({ questions }) {
   return (
     <div className="space-y-6">
       {total > 0 && (
-        <div className="rounded-xl border border-slate-200 bg-slate-50 p-4 text-center">
-          <p className="text-sm text-slate-500">
+        <div className="rounded-xl border border-stone-200 bg-stone-50 p-4 text-center">
+          <p className="text-sm text-stone-500">
             Score so far:{" "}
-            <span className="font-semibold text-slate-900">
+            <span className="font-semibold text-stone-900">
               {score} / {total}
             </span>{" "}
             revealed
@@ -492,9 +492,9 @@ function QuizView({ questions }) {
         return (
           <div
             key={i}
-            className="rounded-xl border border-slate-200 bg-slate-50 p-5"
+            className="rounded-xl border border-stone-200 bg-stone-50 p-5"
           >
-            <p className="mb-4 font-semibold text-slate-900">
+            <p className="mb-4 font-semibold text-stone-900">
               {i + 1}. {q.question}
             </p>
 
@@ -509,11 +509,11 @@ function QuizView({ questions }) {
                     cls += "border-emerald-200 bg-emerald-50 text-emerald-800 font-medium";
                   else if (isSelected)
                     cls += "border-red-200 bg-red-50 text-red-700 line-through";
-                  else cls += "border-slate-200 bg-white text-slate-400";
+                  else cls += "border-stone-200 bg-white text-stone-400";
                 } else {
                   cls += isSelected
-                    ? "border-indigo-200 bg-indigo-50 text-indigo-700"
-                    : "border-slate-200 bg-white text-slate-700 hover:bg-slate-50";
+                    ? "border-blue-200 bg-blue-50 text-blue-700"
+                    : "border-stone-200 bg-white text-stone-700 hover:bg-stone-50";
                 }
                 return (
                   <button
@@ -536,14 +536,14 @@ function QuizView({ questions }) {
                   setRevealed((prev) => ({ ...prev, [i]: true }))
                 }
                 disabled={!selected[i]}
-                className="mt-4 rounded-lg border border-slate-200 bg-white px-4 py-2 text-sm font-medium text-slate-700 transition hover:bg-slate-50 disabled:cursor-not-allowed disabled:opacity-40"
+                className="mt-4 rounded-lg border border-stone-200 bg-white px-4 py-2 text-sm font-medium text-stone-700 transition hover:bg-stone-50 disabled:cursor-not-allowed disabled:opacity-40"
               >
                 Check Answer
               </button>
             ) : (
-              <div className="mt-4 rounded-xl border border-slate-200 bg-white p-4">
-                <p className="mb-1 text-xs text-slate-400">Explanation</p>
-                <p className="text-sm leading-6 text-slate-700">
+              <div className="mt-4 rounded-xl border border-stone-200 bg-white p-4">
+                <p className="mb-1 text-xs text-stone-400">Explanation</p>
+                <p className="text-sm leading-6 text-stone-700">
                   {q.explanation}
                 </p>
               </div>
@@ -561,7 +561,7 @@ function StatusPill({ status }) {
       ? "border-emerald-200 bg-emerald-50 text-emerald-700"
       : status === "Processing"
       ? "border-amber-200 bg-amber-50 text-amber-700"
-      : "border-slate-200 bg-slate-100 text-slate-600";
+      : "border-stone-200 bg-stone-100 text-stone-600";
   return (
     <span className={`rounded-full border px-3 py-1 text-xs font-medium ${styles}`}>
       {status}
@@ -575,7 +575,7 @@ function ContentBadge({ label, active }) {
       className={`rounded-full border px-3 py-1 text-xs font-medium ${
         active
           ? "border-emerald-200 bg-emerald-50 text-emerald-700"
-          : "border-slate-200 bg-slate-100 text-slate-500"
+          : "border-stone-200 bg-stone-100 text-stone-500"
       }`}
     >
       {label}

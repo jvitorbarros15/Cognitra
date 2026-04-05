@@ -78,35 +78,35 @@ export default function NavBar() {
 
   return (
     <>
-      <header className="border-b border-slate-200 bg-white">
+      <header className="border-b border-stone-200 bg-white">
         <div className="mx-auto flex w-full max-w-7xl items-center justify-between px-6 py-4 lg:px-10">
           <Link href="/" className="flex items-center gap-3">
-            <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-indigo-600 text-sm font-bold text-white">
+            <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-blue-600 text-sm font-bold text-white">
               C
             </div>
             <div>
-              <p className="text-base font-semibold tracking-tight text-slate-900">Cognitra</p>
-              <p className="text-xs text-slate-500">AI study workspace</p>
+              <p className="text-base font-semibold tracking-tight text-stone-900">Cognitra</p>
+              <p className="text-xs text-stone-500">AI study workspace</p>
             </div>
           </Link>
 
           <div className="flex items-center gap-3">
-            <Link href="/" className="text-sm text-slate-600 transition hover:text-slate-900">Home</Link>
+            <Link href="/" className="text-sm text-stone-600 transition hover:text-stone-900">Home</Link>
             {loadingAuth ? (
-              <div className="h-8 w-20 animate-pulse rounded-lg bg-slate-100" />
+              <div className="h-8 w-20 animate-pulse rounded-lg bg-stone-100" />
             ) : user ? (
               <>
                 <div className="hidden items-center gap-2 sm:flex">
-                  <div className="flex h-8 w-8 items-center justify-center rounded-full bg-indigo-600 text-xs font-bold text-white">
+                  <div className="flex h-8 w-8 items-center justify-center rounded-full bg-blue-600 text-xs font-bold text-white">
                     {initial}
                   </div>
-                  <span className="max-w-[140px] truncate text-sm text-slate-600">
+                  <span className="max-w-[140px] truncate text-sm text-stone-600">
                     {displayName}
                   </span>
                 </div>
                 <button
                   onClick={() => signOut(auth)}
-                  className="rounded-lg border border-slate-200 bg-white px-4 py-2 text-sm font-medium text-slate-700 transition hover:bg-slate-50"
+                  className="rounded-lg border border-stone-200 bg-white px-4 py-2 text-sm font-medium text-stone-700 transition hover:bg-stone-50"
                 >
                   Logout
                 </button>
@@ -115,13 +115,13 @@ export default function NavBar() {
               <>
                 <button
                   onClick={() => openModal("login")}
-                  className="rounded-lg border border-slate-200 bg-white px-4 py-2 text-sm font-medium text-slate-700 transition hover:bg-slate-50"
+                  className="rounded-lg border border-stone-200 bg-white px-4 py-2 text-sm font-medium text-stone-700 transition hover:bg-stone-50"
                 >
                   Sign In
                 </button>
                 <button
                   onClick={() => openModal("signup")}
-                  className="rounded-lg bg-indigo-600 px-4 py-2 text-sm font-semibold text-white transition hover:bg-indigo-700"
+                  className="rounded-lg bg-blue-600 px-4 py-2 text-sm font-semibold text-white transition hover:bg-blue-700"
                 >
                   Sign Up
                 </button>
@@ -137,30 +137,30 @@ export default function NavBar() {
           onClick={closeModal}
         >
           <div
-            className="w-full max-w-md rounded-2xl border border-slate-200 bg-white p-8 shadow-xl"
+            className="w-full max-w-md rounded-2xl border border-stone-200 bg-white p-8 shadow-xl"
             onClick={(e) => e.stopPropagation()}
           >
             <div className="mb-6 flex items-center justify-between">
-              <h2 className="text-xl font-semibold text-slate-900">
+              <h2 className="text-xl font-semibold text-stone-900">
                 {authMode === "login" ? "Welcome back" : "Create account"}
               </h2>
               <button
                 onClick={closeModal}
-                className="rounded-lg border border-slate-200 px-3 py-1 text-sm text-slate-400 hover:text-slate-600"
+                className="rounded-lg border border-stone-200 px-3 py-1 text-sm text-stone-400 hover:text-stone-600"
               >
                 ✕
               </button>
             </div>
 
-            <div className="mb-6 flex rounded-xl border border-slate-200 bg-slate-50 p-1">
+            <div className="mb-6 flex rounded-xl border border-stone-200 bg-stone-50 p-1">
               {["login", "signup"].map((mode) => (
                 <button
                   key={mode}
                   onClick={() => { setAuthMode(mode); setAuthError(""); }}
                   className={`flex-1 rounded-lg py-2 text-sm font-medium transition ${
                     authMode === mode
-                      ? "bg-white text-slate-900 shadow-sm"
-                      : "text-slate-500 hover:text-slate-700"
+                      ? "bg-white text-stone-900 shadow-sm"
+                      : "text-stone-500 hover:text-stone-700"
                   }`}
                 >
                   {mode === "login" ? "Sign In" : "Sign Up"}
@@ -175,7 +175,7 @@ export default function NavBar() {
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 required
-                className="w-full rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm text-slate-900 outline-none transition placeholder:text-slate-400 focus:border-indigo-400 focus:ring-2 focus:ring-indigo-50"
+                className="w-full rounded-xl border border-stone-200 bg-white px-4 py-3 text-sm text-stone-900 outline-none transition placeholder:text-stone-400 focus:border-blue-400 focus:ring-2 focus:ring-blue-50"
               />
               <input
                 type="password"
@@ -183,27 +183,27 @@ export default function NavBar() {
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 required
-                className="w-full rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm text-slate-900 outline-none transition placeholder:text-slate-400 focus:border-indigo-400 focus:ring-2 focus:ring-indigo-50"
+                className="w-full rounded-xl border border-stone-200 bg-white px-4 py-3 text-sm text-stone-900 outline-none transition placeholder:text-stone-400 focus:border-blue-400 focus:ring-2 focus:ring-blue-50"
               />
               <button
                 type="submit"
                 disabled={submitting}
-                className="w-full rounded-xl bg-indigo-600 py-3 text-sm font-semibold text-white transition hover:bg-indigo-700 disabled:opacity-60"
+                className="w-full rounded-xl bg-blue-600 py-3 text-sm font-semibold text-white transition hover:bg-blue-700 disabled:opacity-60"
               >
                 {submitting ? "..." : authMode === "login" ? "Sign In" : "Create Account"}
               </button>
             </form>
 
             <div className="my-4 flex items-center gap-3">
-              <div className="flex-1 border-t border-slate-200" />
-              <span className="text-xs text-slate-400">or</span>
-              <div className="flex-1 border-t border-slate-200" />
+              <div className="flex-1 border-t border-stone-200" />
+              <span className="text-xs text-stone-400">or</span>
+              <div className="flex-1 border-t border-stone-200" />
             </div>
 
             <button
               onClick={handleGoogle}
               disabled={submitting}
-              className="w-full rounded-xl border border-slate-200 bg-white py-3 text-sm font-medium text-slate-700 transition hover:bg-slate-50 disabled:opacity-60"
+              className="w-full rounded-xl border border-stone-200 bg-white py-3 text-sm font-medium text-stone-700 transition hover:bg-stone-50 disabled:opacity-60"
             >
               Continue with Google
             </button>
