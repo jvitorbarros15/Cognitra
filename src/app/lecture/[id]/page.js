@@ -309,23 +309,22 @@ function TabShell({ title, description, hasContent, hasTranscript, isGenerating,
 
 function SummaryView({ data }) {
   return (
-    <div className="space-y-6">
-      <h3 className="text-2xl font-semibold text-zinc-50">{data.title}</h3>
-      <p className="leading-7 text-zinc-300">{data.overview}</p>
+    <div className="mx-auto max-w-2xl space-y-8">
+      <h3 className="text-3xl font-bold leading-tight text-zinc-50">{data.title}</h3>
+      <p className="text-base leading-8 text-zinc-300">{data.overview}</p>
       <div>
-        <p className="mb-3 text-xs font-medium uppercase tracking-widest text-zinc-500">Key Points</p>
-        <ul className="space-y-2">
+        <p className="mb-5 text-xs font-semibold uppercase tracking-widest text-zinc-500">Key Points</p>
+        <ul className="space-y-4">
           {data.keyPoints?.map((point, i) => (
-            <li key={i} className="flex gap-3 text-zinc-300">
-              <span className="mt-2.5 h-1.5 w-1.5 flex-shrink-0 rounded-full bg-violet-400" />
-              <span className="leading-7">{point}</span>
+            <li key={i} className="border-l-2 border-violet-500/40 pl-5 text-base leading-7 text-zinc-300">
+              {point}
             </li>
           ))}
         </ul>
       </div>
-      <div className="rounded-xl border border-zinc-700 bg-zinc-800 p-5">
-        <p className="mb-2 text-xs font-medium uppercase tracking-widest text-zinc-500">Conclusion</p>
-        <p className="leading-7 text-zinc-300">{data.conclusion}</p>
+      <div className="rounded-2xl border border-zinc-700 bg-zinc-800 p-6">
+        <p className="mb-3 text-xs font-semibold uppercase tracking-widest text-zinc-500">Conclusion</p>
+        <p className="text-base leading-8 text-zinc-200">{data.conclusion}</p>
       </div>
     </div>
   );
@@ -334,34 +333,75 @@ function SummaryView({ data }) {
 function FlashcardsView({ cards }) {
   const [index, setIndex] = useState(0);
   const [flipped, setFlipped] = useState(false);
+  const [fullscreen, setFullscreen] = useState(false);
 
   function goTo(nextIndex) { setIndex(nextIndex); setFlipped(false); }
   if (!cards?.length) return null;
 
+  const card = (
+    <button
+      onClick={() => setFlipped((f) => !f)}
+      className="w-full max-w-2xl rounded-2xl border border-zinc-700 bg-zinc-800 p-12 text-center transition hover:border-zinc-600 active:scale-[0.99]"
+      style={{ minHeight: 260 }}
+    >
+      <p className="mb-5 text-xs font-semibold uppercase tracking-widest text-zinc-500">
+        {flipped ? "Answer" : "Question"}
+      </p>
+      <p className="text-2xl font-semibold leading-9 text-zinc-50">
+        {flipped ? cards[index].back : cards[index].front}
+      </p>
+      <p className="mt-8 text-xs text-zinc-600">
+        Click to {flipped ? "see question" : "reveal answer"}
+      </p>
+    </button>
+  );
+
+  const nav = (
+    <div className="flex gap-3">
+      <button onClick={() => goTo(Math.max(0, index - 1))} disabled={index === 0} className="rounded-lg border border-zinc-700 bg-zinc-800 px-5 py-2 text-sm font-medium text-zinc-300 transition hover:bg-zinc-700 disabled:opacity-40">Previous</button>
+      <button onClick={() => goTo(Math.min(cards.length - 1, index + 1))} disabled={index === cards.length - 1} className="rounded-lg border border-zinc-700 bg-zinc-800 px-5 py-2 text-sm font-medium text-zinc-300 transition hover:bg-zinc-700 disabled:opacity-40">Next</button>
+    </div>
+  );
+
+  const dots = (
+    <div className="flex flex-wrap justify-center gap-1.5">
+      {cards.map((_, i) => (
+        <button key={i} onClick={() => goTo(i)} className={`h-2 w-2 rounded-full transition ${i === index ? "bg-violet-400" : "bg-zinc-600 hover:bg-zinc-500"}`} />
+      ))}
+    </div>
+  );
+
+  if (fullscreen) {
+    return (
+      <div className="fixed inset-0 z-50 flex flex-col items-center justify-center gap-6 bg-zinc-950 px-6">
+        <button
+          onClick={() => setFullscreen(false)}
+          className="absolute right-6 top-6 rounded-lg border border-zinc-700 bg-zinc-900 px-3 py-2 text-sm text-zinc-400 transition hover:bg-zinc-800"
+        >
+          Exit fullscreen
+        </button>
+        <p className="text-sm text-zinc-500">{index + 1} / {cards.length}</p>
+        {card}
+        {nav}
+        {dots}
+      </div>
+    );
+  }
+
   return (
     <div className="flex flex-col items-center gap-6">
-      <p className="text-sm text-zinc-500">{index + 1} / {cards.length}</p>
-
-      <button
-        onClick={() => setFlipped((f) => !f)}
-        className="w-full max-w-xl rounded-2xl border border-zinc-700 bg-zinc-800 p-10 text-center transition hover:border-zinc-600 active:scale-[0.99]"
-        style={{ minHeight: 220 }}
-      >
-        <p className="mb-4 text-xs uppercase tracking-widest text-zinc-500">{flipped ? "Answer" : "Question"}</p>
-        <p className="text-xl font-semibold leading-8 text-zinc-50">{flipped ? cards[index].back : cards[index].front}</p>
-        <p className="mt-6 text-xs text-zinc-600">Click to {flipped ? "see question" : "reveal answer"}</p>
-      </button>
-
-      <div className="flex gap-3">
-        <button onClick={() => goTo(Math.max(0, index - 1))} disabled={index === 0} className="rounded-lg border border-zinc-700 bg-zinc-800 px-5 py-2 text-sm font-medium text-zinc-300 transition hover:bg-zinc-700 disabled:opacity-40">Previous</button>
-        <button onClick={() => goTo(Math.min(cards.length - 1, index + 1))} disabled={index === cards.length - 1} className="rounded-lg border border-zinc-700 bg-zinc-800 px-5 py-2 text-sm font-medium text-zinc-300 transition hover:bg-zinc-700 disabled:opacity-40">Next</button>
+      <div className="flex w-full items-center justify-between">
+        <p className="text-sm text-zinc-500">{index + 1} / {cards.length}</p>
+        <button
+          onClick={() => setFullscreen(true)}
+          className="rounded-lg border border-zinc-700 bg-zinc-800 px-3 py-1.5 text-xs font-medium text-zinc-400 transition hover:bg-zinc-700"
+        >
+          Fullscreen
+        </button>
       </div>
-
-      <div className="flex flex-wrap justify-center gap-1.5">
-        {cards.map((_, i) => (
-          <button key={i} onClick={() => goTo(i)} className={`h-2 w-2 rounded-full transition ${i === index ? "bg-violet-400" : "bg-zinc-600 hover:bg-zinc-500"}`} />
-        ))}
-      </div>
+      {card}
+      {nav}
+      {dots}
     </div>
   );
 }
@@ -371,14 +411,36 @@ function QuizView({ questions }) {
   const [revealed, setRevealed] = useState({});
   if (!questions?.length) return null;
 
+  const totalQ = questions.length;
+  const revealedCount = Object.keys(revealed).length;
   const score = Object.keys(revealed).filter((i) => selected[i] === questions[i].answer).length;
-  const total = Object.keys(revealed).length;
+  const allDone = revealedCount === totalQ;
 
   return (
-    <div className="space-y-6">
-      {total > 0 && (
-        <div className="rounded-xl border border-zinc-700 bg-zinc-800 p-4 text-center">
-          <p className="text-sm text-zinc-400">Score so far: <span className="font-semibold text-zinc-50">{score} / {total}</span> revealed</p>
+    <div className="space-y-5">
+      <div>
+        <div className="mb-2 flex items-center justify-between text-xs text-zinc-500">
+          <span>{revealedCount} / {totalQ} answered</span>
+          {revealedCount > 0 && (
+            <span className={score / revealedCount >= 0.7 ? "text-emerald-400" : "text-zinc-400"}>
+              {score} correct
+            </span>
+          )}
+        </div>
+        <div className="h-1 w-full overflow-hidden rounded-full bg-zinc-800">
+          <div
+            className="h-1 rounded-full bg-violet-500 transition-all duration-300"
+            style={{ width: `${(revealedCount / totalQ) * 100}%` }}
+          />
+        </div>
+      </div>
+
+      {allDone && (
+        <div className="rounded-2xl border border-violet-500/20 bg-violet-500/10 p-6 text-center">
+          <p className="text-3xl font-bold text-zinc-50">{score} / {totalQ}</p>
+          <p className="mt-2 text-sm text-zinc-400">
+            {score === totalQ ? "Perfect score — great work!" : score >= totalQ * 0.7 ? "Good job! Review the missed ones." : "Keep practicing — you'll get there."}
+          </p>
         </div>
       )}
 

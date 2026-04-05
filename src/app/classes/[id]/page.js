@@ -369,42 +369,39 @@ export default function ClassPage({ params }) {
                 </div>
               ) : (
                 filteredLectures.map((lecture) => (
-                  <div key={lecture.id} className="rounded-xl border border-zinc-700 bg-zinc-800 p-5 transition hover:border-zinc-600">
-                    <div className="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
-                      <div>
-                        <div className="flex flex-wrap items-center gap-2">
-                          <h3 className="text-lg font-semibold text-zinc-50">{lecture.title}</h3>
-                          <StatusPill status={lecture.status} />
-                        </div>
-                        <p className="mt-1.5 text-sm text-zinc-400">{lecture.date} · {lecture.duration}</p>
-                        <div className="mt-3 flex flex-wrap items-center gap-1.5">
-                          <PipelineStep label="Audio" done={lecture.hasRecording} />
-                          <span className="text-xs text-zinc-700">→</span>
-                          <PipelineStep label="Transcript" done={lecture.transcript} />
-                          <span className="text-xs text-zinc-700">→</span>
-                          <PipelineStep label="Summary" done={lecture.summary} />
-                          <PipelineStep label="Flashcards" done={lecture.flashcards > 0} />
-                          <PipelineStep label="Quiz" done={lecture.quizzes > 0} />
-                          <PipelineStep label="Mind Map" done={lecture.mindMaps > 0} />
-                        </div>
+                  <div key={lecture.id} className="flex items-center justify-between gap-4 rounded-xl border border-zinc-700 bg-zinc-800 px-5 py-4 transition hover:border-zinc-600">
+                    <div className="min-w-0 flex-1">
+                      <div className="flex flex-wrap items-center gap-2">
+                        <h3 className="truncate text-base font-semibold text-zinc-50">{lecture.title}</h3>
+                        <StatusPill status={lecture.status} />
                       </div>
-
-                      <div className="flex flex-wrap gap-3">
-                        <Link
-                          href={`/lecture/${lecture.id}?classId=${classId}`}
-                          className="rounded-lg border border-zinc-600 bg-zinc-700 px-4 py-2 text-sm font-medium text-zinc-200 transition hover:bg-zinc-600"
-                        >
-                          Open Lecture
-                        </Link>
-                        <button
-                          onClick={() => setSelectedLectureId(lecture.id)}
-                          className="rounded-lg border border-violet-500/20 bg-violet-500/10 px-4 py-2 text-sm font-medium text-violet-400 transition hover:bg-violet-500/20"
-                        >
-                          Add Audio
-                        </button>
+                      <p className="mt-1 text-xs text-zinc-500">{lecture.date} · {lecture.duration}</p>
+                      <div className="mt-2.5 flex flex-wrap items-center gap-1.5">
+                        <PipelineStep label="Audio" done={lecture.hasRecording} />
+                        <span className="text-xs text-zinc-700">→</span>
+                        <PipelineStep label="Transcript" done={lecture.transcript} />
+                        <span className="text-xs text-zinc-700">→</span>
+                        <PipelineStep label="Summary" done={lecture.summary} />
+                        <PipelineStep label="Flashcards" done={lecture.flashcards > 0} />
+                        <PipelineStep label="Quiz" done={lecture.quizzes > 0} />
+                        <PipelineStep label="Mind Map" done={lecture.mindMaps > 0} />
                       </div>
                     </div>
 
+                    <div className="flex shrink-0 flex-col gap-2 sm:flex-row">
+                      <Link
+                        href={`/lecture/${lecture.id}?classId=${classId}`}
+                        className="rounded-lg bg-violet-600 px-4 py-2 text-sm font-medium text-white transition hover:bg-violet-700"
+                      >
+                        Open
+                      </Link>
+                      <button
+                        onClick={() => setSelectedLectureId(lecture.id)}
+                        className="rounded-lg border border-zinc-600 bg-zinc-700 px-4 py-2 text-sm font-medium text-zinc-300 transition hover:bg-zinc-600"
+                      >
+                        + Audio
+                      </button>
+                    </div>
                   </div>
                 ))
               )}
