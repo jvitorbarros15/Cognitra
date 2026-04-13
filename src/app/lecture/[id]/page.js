@@ -7,6 +7,7 @@ import { onAuthStateChanged } from "firebase/auth";
 import { doc, getDoc, serverTimestamp, updateDoc } from "firebase/firestore";
 import { auth, db } from "@/lib/firebase";
 import MindMapFlow from "@/components/MindMapFlow";
+import NotebookView from "@/components/NotebookView";
 
 function LecturePageInner({ lectureId }) {
   const searchParams = useSearchParams();
@@ -106,6 +107,9 @@ function LecturePageInner({ lectureId }) {
       } else if (type === "mindmap") {
         firestoreUpdate.mindmapData = data;
         localUpdate.mindmapData = data;
+      } else if (type === "notebook") {
+        firestoreUpdate.notebookData = data;
+        localUpdate.notebookData = data;
       }
 
       await updateDoc(lectureRef, firestoreUpdate);
@@ -157,12 +161,14 @@ function LecturePageInner({ lectureId }) {
   const hasFlashcards = Array.isArray(lecture.flashcards) && lecture.flashcards.length > 0;
   const hasQuiz = Array.isArray(lecture.quizQuestions) && lecture.quizQuestions.length > 0;
   const hasMindmap = !!lecture.mindmapData?.root;
+  const hasNotebook = !!lecture.notebookData?.pages?.length;
 
   const tabs = [
     { key: "summary", label: "Summary", has: hasSummary },
     { key: "flashcards", label: "Flashcards", has: hasFlashcards },
     { key: "quiz", label: "Quiz", has: hasQuiz },
     { key: "mindmap", label: "Mind Map", has: hasMindmap },
+    { key: "notebook", label: "Notebook", has: hasNotebook },
     { key: "transcript", label: "Transcript", has: hasTranscript },
   ];
 
@@ -211,6 +217,7 @@ function LecturePageInner({ lectureId }) {
             <ContentBadge label={`${lecture.flashcards?.length || 0} Flashcards`} active={hasFlashcards} />
             <ContentBadge label={`${lecture.quizQuestions?.length || 0} Quiz Questions`} active={hasQuiz} />
             <ContentBadge label="Mind Map" active={hasMindmap} />
+            <ContentBadge label="Notebook" active={hasNotebook} />
           </div>
         </header>
 
@@ -286,6 +293,28 @@ function LecturePageInner({ lectureId }) {
                 <div style={{ height: 600 }} className="rounded-2xl overflow-hidden border border-white/10">
                   <MindMapFlow mindMap={lecture.mindmapData} />
                 </div>
+              )}
+            </TabShell>
+          )}
+
+          {activeTab === "notebook" && (
+            <TabShell
+              title="Notebook"
+              description="AI-generated class notes with highlighting and pencil annotations."
+              hasContent={hasNotebook}
+              hasTranscript={hasTranscript}
+              isGenerating={generating === "notebook"}
+              onGenerate={() => generate("notebook")}
+            >
+              {hasNotebook && (
+                <NotebookView
+                  notebookData={lecture.notebookData}
+                  lectureId={lectureId}
+                  classId={classId}
+                  userId={user.uid}
+                  initialHighlights={lecture.notebookHighlights || {}}
+                  initialNotes={lecture.notebookNotes || []}
+                />
               )}
             </TabShell>
           )}
