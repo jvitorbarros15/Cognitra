@@ -24,6 +24,7 @@ export default function ClassPage({ params }) {
 
   const mediaRecorderRef = useRef(null);
   const chunksRef = useRef([]);
+  const recordingTimerRef = useRef(null);
 
   const [user, setUser] = useState(null);
   const [loadingAuth, setLoadingAuth] = useState(true);
@@ -37,6 +38,7 @@ export default function ClassPage({ params }) {
   const [selectedLectureId, setSelectedLectureId] = useState(null);
 
   const [isRecording, setIsRecording] = useState(false);
+  const [recordingTime, setRecordingTime] = useState(0);
   const [recordingLectureTitle, setRecordingLectureTitle] = useState("");
   const [creatingLecture, setCreatingLecture] = useState(false);
 
@@ -256,10 +258,18 @@ export default function ClassPage({ params }) {
   }
  
 
+  function formatRecordingTime(seconds) {
+    const m = Math.floor(seconds / 60).toString().padStart(2, "0");
+    const s = (seconds % 60).toString().padStart(2, "0");
+    return `${m}:${s}`;
+  }
+
   async function handleRecordClick() {
     if (isRecording) {
       mediaRecorderRef.current?.stop();
       setIsRecording(false);
+      clearInterval(recordingTimerRef.current);
+      setRecordingTime(0);
       return;
     }
  
@@ -292,6 +302,10 @@ export default function ClassPage({ params }) {
  
       recorder.start();
       setIsRecording(true);
+      setRecordingTime(0);
+      recordingTimerRef.current = setInterval(() => {
+        setRecordingTime((t) => t + 1);
+      }, 1000);
     } catch (error) {
       setAudioError("Could not access microphone.");
     }
@@ -649,7 +663,7 @@ export default function ClassPage({ params }) {
                 </div>
                 {isRecording && (
                   <span className="rounded-full border border-rose-400/20 bg-rose-400/10 px-3 py-1 text-xs font-semibold text-rose-200">
-                    Recording
+                    Recording · {formatRecordingTime(recordingTime)}
                   </span>
                 )}
               </div>
