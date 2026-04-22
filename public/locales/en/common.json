@@ -1,0 +1,53 @@
+{
+  "common": {
+    "language": "Language",
+    "english": "English",
+    "portuguese": "Português"
+  },
+  "navigation": {
+    "home": "Home",
+    "mindmap": "Mind Map",
+    "notebook": "Notebook",
+    "classes": "Classes",
+    "about": "About"
+  },
+  "buttons": {
+    "save": "Save",
+    "cancel": "Cancel",
+    "delete": "Delete",
+    "edit": "Edit",
+    "add": "Add",
+    "submit": "Submit",
+    "start": "Start",
+    "stop": "Stop",
+    "record": "Record",
+    "play": "Play",
+    "pause": "Pause",
+    "continue": "Continue"
+  },
+  "messages": {
+    "welcome": "Welcome",
+    "loading": "Loading...",
+    "error": "An error occurred",
+    "success": "Success",
+    "confirmation": "Are you sure?"
+  },
+  "notebook": {
+    "title": "Notebook",
+    "newNote": "New Note",
+    "addNote": "Add Note",
+    "editNote": "Edit Note",
+    "deleteNote": "Delete Note",
+    "notes": "Notes",
+    "highlight": "Highlight",
+    "addHighlight": "Add Highlight"
+  },
+  "recording": {
+    "startRecording": "Start Recording",
+    "stopRecording": "Stop Recording",
+    "timeElapsed": "Time Elapsed",
+    "seconds": "seconds",
+    "minutes": "minutes",
+    "hours": "hours"
+  }
+}

@@ -1,0 +1,53 @@
+{
+  "common": {
+    "language": "Idioma",
+    "english": "English",
+    "portuguese": "Português"
+  },
+  "navigation": {
+    "home": "Início",
+    "mindmap": "Mapa Mental",
+    "notebook": "Caderno",
+    "classes": "Aulas",
+    "about": "Sobre"
+  },
+  "buttons": {
+    "save": "Salvar",
+    "cancel": "Cancelar",
+    "delete": "Deletar",
+    "edit": "Editar",
+    "add": "Adicionar",
+    "submit": "Enviar",
+    "start": "Iniciar",
+    "stop": "Parar",
+    "record": "Gravar",
+    "play": "Reproduzir",
+    "pause": "Pausar",
+    "continue": "Continuar"
+  },
+  "messages": {
+    "welcome": "Bem-vindo",
+    "loading": "Carregando...",
+    "error": "Ocorreu um erro",
+    "success": "Sucesso",
+    "confirmation": "Tem certeza?"
+  },
+  "notebook": {
+    "title": "Caderno",
+    "newNote": "Nova Nota",
+    "addNote": "Adicionar Nota",
+    "editNote": "Editar Nota",
+    "deleteNote": "Deletar Nota",
+    "notes": "Notas",
+    "highlight": "Destacar",
+    "addHighlight": "Adicionar Destaque"
+  },
+  "recording": {
+    "startRecording": "Iniciar Gravação",
+    "stopRecording": "Parar Gravação",
+    "timeElapsed": "Tempo Decorrido",
+    "seconds": "segundos",
+    "minutes": "minutos",
+    "hours": "horas"
+  }
+}
