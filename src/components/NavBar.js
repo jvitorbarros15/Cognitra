@@ -10,6 +10,7 @@ import {
   signOut,
 } from "firebase/auth";
 import { auth, googleProvider } from "@/lib/firebase";
+import LanguageSwitcher from "./LanguageSwitcher";
 
 export default function NavBar() {
   const [user, setUser] = useState(null);
@@ -92,6 +93,7 @@ export default function NavBar() {
 
           <div className="flex items-center gap-3">
             <Link href="/" className="text-sm text-slate-300 transition hover:text-white">Home</Link>
+            <LanguageSwitcher />
             {loadingAuth ? (
               <div className="h-8 w-20 animate-pulse rounded-2xl bg-white/10" />
             ) : user ? (

@@ -1,5 +1,6 @@
 import "./globals.css";
 import NavBar from "@/components/NavBar";
+import I18nProvider from "@/components/I18nProvider";
 import { Analytics } from '@vercel/analytics/next';
 
 export const metadata = {
@@ -16,19 +17,21 @@ export default function RootLayout({ children }) {
         <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@400;600&display=swap" rel="stylesheet" />
       </head>
       <body className="min-h-screen bg-slate-950 text-white antialiased">
-        <div className="relative min-h-screen">
-          <div className="pointer-events-none absolute inset-0 overflow-hidden">
-            <div className="absolute left-[-120px] top-[-120px] h-80 w-80 rounded-full bg-cyan-500/10 blur-3xl" />
-            <div className="absolute right-[-100px] top-20 h-72 w-72 rounded-full bg-fuchsia-500/10 blur-3xl" />
-            <div className="absolute bottom-[-120px] left-1/3 h-96 w-96 rounded-full bg-violet-500/10 blur-3xl" />
-          </div>
+        <I18nProvider>
+          <div className="relative min-h-screen">
+            <div className="pointer-events-none absolute inset-0 overflow-hidden">
+              <div className="absolute left-[-120px] top-[-120px] h-80 w-80 rounded-full bg-cyan-500/10 blur-3xl" />
+              <div className="absolute right-[-100px] top-20 h-72 w-72 rounded-full bg-fuchsia-500/10 blur-3xl" />
+              <div className="absolute bottom-[-120px] left-1/3 h-96 w-96 rounded-full bg-violet-500/10 blur-3xl" />
+            </div>
 
-          <div className="relative z-10 flex min-h-screen flex-col">
-            <NavBar />
-            <main className="flex-1">{children}</main>
+            <div className="relative z-10 flex min-h-screen flex-col">
+              <NavBar />
+              <main className="flex-1">{children}</main>
+            </div>
           </div>
-        </div>
-        <Analytics />
+          <Analytics />
+        </I18nProvider>
       </body>
     </html>
   );
