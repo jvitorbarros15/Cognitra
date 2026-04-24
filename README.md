@@ -18,6 +18,7 @@ Cognitra is an intelligent learning platform designed to help students organize,
 - **Frontend**: React 19, Next.js 16
 - **Styling**: Tailwind CSS
 - **AI Integration**: OpenAI, LangChain
+- **Transcription**: AssemblyAI
 - **Backend & Database**: Firebase
 - **Internationalization**: next-i18next
 - **Visualization**: React Flow
@@ -46,7 +47,12 @@ Cognitra is an intelligent learning platform designed to help students organize,
    NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID=your_sender_id
    NEXT_PUBLIC_FIREBASE_APP_ID=your_app_id
    OPENAI_API_KEY=your_openai_key
+   ASSEMBLYAI_API_KEY=your_assemblyai_key
    ```
+
+### Transcription API
+
+Cognitra uses the AssemblyAI API for lecture transcription. Audio uploaded or recorded in the class workspace is sent through the app's `/api/transcribe` route, which uploads the audio to AssemblyAI and creates a transcript with language detection, speaker labels, chapters, and highlights enabled.
 
 ### Development
 
