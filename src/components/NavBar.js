@@ -9,10 +9,12 @@ import {
   signInWithPopup,
   signOut,
 } from "firebase/auth";
+import { useTranslation } from "react-i18next";
 import { auth, googleProvider } from "@/lib/firebase";
 import LanguageSwitcher from "./LanguageSwitcher";
 
 export default function NavBar() {
+  const { t } = useTranslation();
   const [user, setUser] = useState(null);
   const [loadingAuth, setLoadingAuth] = useState(true);
   const [showModal, setShowModal] = useState(false);
@@ -74,7 +76,7 @@ export default function NavBar() {
     }
   }
 
-  const displayName = user?.displayName || user?.email?.split("@")[0] || "User";
+  const displayName = user?.displayName || user?.email?.split("@")[0] || t("auth.user");
   const initial = displayName[0].toUpperCase();
 
   return (
@@ -87,12 +89,14 @@ export default function NavBar() {
             </div>
             <div>
               <p className="text-lg font-semibold tracking-tight">Cognitra</p>
-              <p className="text-xs text-slate-400">AI study workspace</p>
+              <p className="text-xs text-slate-400">{t("navigation.tagline")}</p>
             </div>
           </Link>
 
           <div className="flex items-center gap-3">
-            <Link href="/" className="text-sm text-slate-300 transition hover:text-white">Home</Link>
+            <Link href="/" className="text-sm text-slate-300 transition hover:text-white">
+              {t("navigation.home")}
+            </Link>
             <LanguageSwitcher />
             {loadingAuth ? (
               <div className="h-8 w-20 animate-pulse rounded-2xl bg-white/10" />
@@ -110,7 +114,7 @@ export default function NavBar() {
                   onClick={() => signOut(auth)}
                   className="rounded-2xl border border-white/10 bg-white/5 px-4 py-2 text-sm font-medium text-white transition hover:bg-white/10"
                 >
-                  Logout
+                  {t("auth.logout")}
                 </button>
               </>
             ) : (
@@ -119,13 +123,13 @@ export default function NavBar() {
                   onClick={() => openModal("login")}
                   className="rounded-2xl border border-white/10 bg-white/5 px-4 py-2 text-sm font-medium text-white transition hover:bg-white/10"
                 >
-                  Sign In
+                  {t("auth.signIn")}
                 </button>
                 <button
                   onClick={() => openModal("signup")}
                   className="rounded-2xl bg-gradient-to-r from-cyan-400 to-violet-500 px-4 py-2 text-sm font-semibold text-slate-950 transition hover:opacity-90"
                 >
-                  Sign Up
+                  {t("auth.signUp")}
                 </button>
               </>
             )}
@@ -144,7 +148,7 @@ export default function NavBar() {
           >
             <div className="mb-6 flex items-center justify-between">
               <h2 className="text-xl font-semibold">
-                {authMode === "login" ? "Welcome back" : "Create account"}
+                {authMode === "login" ? t("auth.welcomeBack") : t("auth.createAccount")}
               </h2>
               <button
                 onClick={closeModal}
@@ -165,7 +169,7 @@ export default function NavBar() {
                       : "text-slate-400 hover:text-white"
                   }`}
                 >
-                  {mode === "login" ? "Sign In" : "Sign Up"}
+                  {mode === "login" ? t("auth.signIn") : t("auth.signUp")}
                 </button>
               ))}
             </div>
@@ -173,7 +177,7 @@ export default function NavBar() {
             <form onSubmit={handleEmailAuth} className="space-y-3">
               <input
                 type="email"
-                placeholder="Email"
+                placeholder={t("auth.email")}
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 required
@@ -181,7 +185,7 @@ export default function NavBar() {
               />
               <input
                 type="password"
-                placeholder="Password"
+                placeholder={t("auth.password")}
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 required
@@ -192,13 +196,13 @@ export default function NavBar() {
                 disabled={submitting}
                 className="w-full rounded-2xl bg-gradient-to-r from-cyan-400 to-violet-500 py-3 text-sm font-semibold text-slate-950 transition hover:opacity-90 disabled:opacity-60"
               >
-                {submitting ? "..." : authMode === "login" ? "Sign In" : "Create Account"}
+                {submitting ? "..." : authMode === "login" ? t("auth.signIn") : t("auth.createAccount")}
               </button>
             </form>
 
             <div className="my-4 flex items-center gap-3">
               <div className="flex-1 border-t border-white/10" />
-              <span className="text-xs text-slate-500">or</span>
+              <span className="text-xs text-slate-500">{t("auth.or")}</span>
               <div className="flex-1 border-t border-white/10" />
             </div>
 
@@ -207,7 +211,7 @@ export default function NavBar() {
               disabled={submitting}
               className="w-full rounded-2xl border border-white/10 bg-white/5 py-3 text-sm font-medium text-white transition hover:bg-white/10 disabled:opacity-60"
             >
-              Continue with Google
+              {t("auth.continueWithGoogle")}
             </button>
 
             {authError && (

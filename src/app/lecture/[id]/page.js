@@ -5,11 +5,13 @@ import { use, useEffect, useState, Suspense } from "react";
 import { useSearchParams } from "next/navigation";
 import { onAuthStateChanged } from "firebase/auth";
 import { doc, getDoc, serverTimestamp, updateDoc } from "firebase/firestore";
+import { useTranslation } from "react-i18next";
 import { auth, db } from "@/lib/firebase";
 import MindMapFlow from "@/components/MindMapFlow";
 import NotebookView from "@/components/NotebookView";
 
 function LecturePageInner({ lectureId }) {
+  const { t } = useTranslation();
   const searchParams = useSearchParams();
   const classId = searchParams.get("classId");
 
@@ -38,7 +40,7 @@ function LecturePageInner({ lectureId }) {
         return;
       }
       if (!classId) {
-        setPageError("Missing class ID. Please open this lecture from the class workspace.");
+        setPageError(t("lecture.missingClassId"));
         setPageLoading(false);
         return;
       }
@@ -56,7 +58,7 @@ function LecturePageInner({ lectureId }) {
         ]);
 
         if (!lectureSnap.exists()) {
-          setPageError("Lecture not found.");
+          setPageError(t("lecture.notFound"));
           setPageLoading(false);
           return;
         }
@@ -65,18 +67,18 @@ function LecturePageInner({ lectureId }) {
         setLecture({ id: lectureSnap.id, ...lectureSnap.data() });
       } catch (error) {
         console.error(error);
-        setPageError("Failed to load lecture.");
+        setPageError(t("lecture.loadError"));
       } finally {
         setPageLoading(false);
       }
     }
 
     if (!loadingAuth) load();
-  }, [user, loadingAuth, classId, lectureId]);
+  }, [user, loadingAuth, classId, lectureId, t]);
 
   async function generate(type) {
     if (!lecture?.transcript) {
-      alert("This lecture has no transcript yet. Please record or upload audio in the class workspace first.");
+      alert(t("lecture.noTranscriptAlert"));
       return;
     }
 
@@ -89,7 +91,7 @@ function LecturePageInner({ lectureId }) {
       });
 
       const data = await res.json();
-      if (!res.ok) throw new Error(data.error || `Failed to generate ${type}`);
+      if (!res.ok) throw new Error(data.error || t("lecture.generateError", { type }));
 
       const lectureRef = doc(db, "users", user.uid, "classes", classId, "lectures", lectureId);
       let firestoreUpdate = { updatedAt: serverTimestamp() };
@@ -117,7 +119,7 @@ function LecturePageInner({ lectureId }) {
       setActiveTab(type);
     } catch (error) {
       console.error(error);
-      alert(error.message || `Failed to generate ${type}`);
+      alert(error.message || t("lecture.generateError", { type }));
     } finally {
       setGenerating(null);
     }
@@ -126,7 +128,7 @@ function LecturePageInner({ lectureId }) {
   if (loadingAuth || pageLoading) {
     return (
       <main className="min-h-screen bg-slate-950 px-6 py-10 text-white">
-        <p className="text-slate-400">Loading lecture...</p>
+        <p className="text-slate-400">{t("lecture.loadingLecture")}</p>
       </main>
     );
   }
@@ -134,9 +136,9 @@ function LecturePageInner({ lectureId }) {
   if (!user) {
     return (
       <main className="min-h-screen bg-slate-950 px-6 py-10 text-white">
-        <h1 className="text-3xl font-bold">Please log in</h1>
+        <h1 className="text-3xl font-bold">{t("auth.pleaseLogIn")}</h1>
         <Link href="/" className="mt-6 inline-flex rounded-2xl border border-white/10 bg-white/5 px-4 py-2 text-sm text-white">
-          Back Home
+          {t("navigation.backHome")}
         </Link>
       </main>
     );
@@ -145,10 +147,10 @@ function LecturePageInner({ lectureId }) {
   if (pageError) {
     return (
       <main className="min-h-screen bg-slate-950 px-6 py-10 text-white">
-        <h1 className="text-3xl font-bold">Error</h1>
+        <h1 className="text-3xl font-bold">{t("messages.error")}</h1>
         <p className="mt-3 text-slate-400">{pageError}</p>
         <Link href="/" className="mt-6 inline-flex rounded-2xl border border-white/10 bg-white/5 px-4 py-2 text-sm text-white">
-          Back Home
+          {t("navigation.backHome")}
         </Link>
       </main>
     );
@@ -164,12 +166,12 @@ function LecturePageInner({ lectureId }) {
   const hasNotebook = !!lecture.notebookData?.pages?.length;
 
   const tabs = [
-    { key: "summary", label: "Summary", has: hasSummary },
-    { key: "flashcards", label: "Flashcards", has: hasFlashcards },
-    { key: "quiz", label: "Quiz", has: hasQuiz },
-    { key: "mindmap", label: "Mind Map", has: hasMindmap },
-    { key: "notebook", label: "Notebook", has: hasNotebook },
-    { key: "transcript", label: "Transcript", has: hasTranscript },
+    { key: "summary", label: t("lecture.tabs.summary"), has: hasSummary },
+    { key: "flashcards", label: t("lecture.tabs.flashcards"), has: hasFlashcards },
+    { key: "quiz", label: t("lecture.tabs.quiz"), has: hasQuiz },
+    { key: "mindmap", label: t("lecture.tabs.mindmap"), has: hasMindmap },
+    { key: "notebook", label: t("lecture.tabs.notebook"), has: hasNotebook },
+    { key: "transcript", label: t("lecture.tabs.transcript"), has: hasTranscript },
   ];
 
   return (
@@ -187,7 +189,7 @@ function LecturePageInner({ lectureId }) {
               href={`/classes/${classId}`}
               className="inline-flex rounded-full border border-white/10 bg-white/5 px-4 py-2 text-sm text-slate-300 transition hover:bg-white/10 hover:text-white"
             >
-              ← Back to Class
+              {t("navigation.backToClass")}
             </Link>
           )}
           {classData && (
@@ -199,25 +201,25 @@ function LecturePageInner({ lectureId }) {
           <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
             <div>
               <div className="mb-2 inline-flex items-center rounded-full border border-cyan-400/20 bg-cyan-400/10 px-3 py-1 text-xs font-medium text-cyan-200">
-                Lecture
+                {t("lecture.label")}
               </div>
               <h1 className="text-3xl font-bold tracking-tight sm:text-4xl">
-                {lecture.title || "Untitled Lecture"}
+                {lecture.title || t("lecture.untitledLecture")}
               </h1>
               <p className="mt-2 text-sm text-slate-400">
-                {lecture.dateLabel || "No date"} · {lecture.durationLabel || "0 min"}
+                {lecture.dateLabel || t("lecture.noDate")} · {lecture.durationLabel || "0 min"}
               </p>
             </div>
-            <StatusPill status={lecture.status || "Draft"} />
+            <StatusPill status={lecture.status || "Draft"} label={t(`statuses.${lecture.status || "Draft"}`, { defaultValue: lecture.status || "Draft" })} />
           </div>
 
           <div className="mt-6 flex flex-wrap gap-3">
-            <ContentBadge label="Transcript" active={hasTranscript} />
-            <ContentBadge label="Summary" active={hasSummary} />
-            <ContentBadge label={`${lecture.flashcards?.length || 0} Flashcards`} active={hasFlashcards} />
-            <ContentBadge label={`${lecture.quizQuestions?.length || 0} Quiz Questions`} active={hasQuiz} />
-            <ContentBadge label="Mind Map" active={hasMindmap} />
-            <ContentBadge label="Notebook" active={hasNotebook} />
+            <ContentBadge label={t("lecture.content.transcript")} active={hasTranscript} />
+            <ContentBadge label={t("lecture.content.summary")} active={hasSummary} />
+            <ContentBadge label={t("lecture.content.flashcardsCount", { count: lecture.flashcards?.length || 0 })} active={hasFlashcards} />
+            <ContentBadge label={t("lecture.content.quizQuestionsCount", { count: lecture.quizQuestions?.length || 0 })} active={hasQuiz} />
+            <ContentBadge label={t("lecture.content.mindMap")} active={hasMindmap} />
+            <ContentBadge label={t("lecture.content.notebook")} active={hasNotebook} />
           </div>
         </header>
 
@@ -243,8 +245,8 @@ function LecturePageInner({ lectureId }) {
         <div className="rounded-3xl border border-white/10 bg-white/5 p-6 shadow-2xl backdrop-blur-xl">
           {activeTab === "summary" && (
             <TabShell
-              title="Summary"
-              description="A structured overview of the lecture with key points and conclusion."
+              title={t("lecture.tabs.summary")}
+              description={t("lecture.descriptions.summary")}
               hasContent={hasSummary}
               hasTranscript={hasTranscript}
               isGenerating={generating === "summary"}
@@ -256,8 +258,8 @@ function LecturePageInner({ lectureId }) {
 
           {activeTab === "flashcards" && (
             <TabShell
-              title="Flashcards"
-              description="Study core concepts with generated flip cards."
+              title={t("lecture.tabs.flashcards")}
+              description={t("lecture.descriptions.flashcards")}
               hasContent={hasFlashcards}
               hasTranscript={hasTranscript}
               isGenerating={generating === "flashcards"}
@@ -269,8 +271,8 @@ function LecturePageInner({ lectureId }) {
 
           {activeTab === "quiz" && (
             <TabShell
-              title="Quiz"
-              description="Multiple-choice questions to test your understanding."
+              title={t("lecture.tabs.quiz")}
+              description={t("lecture.descriptions.quiz")}
               hasContent={hasQuiz}
               hasTranscript={hasTranscript}
               isGenerating={generating === "quiz"}
@@ -282,8 +284,8 @@ function LecturePageInner({ lectureId }) {
 
           {activeTab === "mindmap" && (
             <TabShell
-              title="Mind Map"
-              description="Visual representation of the lecture structure."
+              title={t("lecture.tabs.mindmap")}
+              description={t("lecture.descriptions.mindmap")}
               hasContent={hasMindmap}
               hasTranscript={hasTranscript}
               isGenerating={generating === "mindmap"}
@@ -299,8 +301,8 @@ function LecturePageInner({ lectureId }) {
 
           {activeTab === "notebook" && (
             <TabShell
-              title="Notebook"
-              description="AI-generated class notes with highlighting and pencil annotations."
+              title={t("lecture.tabs.notebook")}
+              description={t("lecture.descriptions.notebook")}
               hasContent={hasNotebook}
               hasTranscript={hasTranscript}
               isGenerating={generating === "notebook"}
@@ -321,23 +323,23 @@ function LecturePageInner({ lectureId }) {
 
           {activeTab === "transcript" && (
             <div>
-              <h2 className="text-xl font-semibold mb-4">Transcript</h2>
+              <h2 className="text-xl font-semibold mb-4">{t("lecture.tabs.transcript")}</h2>
               {hasTranscript ? (
                 <p className="whitespace-pre-wrap text-sm leading-7 text-slate-300">
                   {lecture.transcript}
                 </p>
               ) : (
                 <div className="rounded-2xl border border-white/10 bg-slate-900/60 p-8 text-center">
-                  <p className="text-slate-400">No transcript yet.</p>
+                  <p className="text-slate-400">{t("lecture.noTranscript")}</p>
                   <p className="mt-2 text-sm text-slate-500">
-                    Record or upload audio in the class workspace to generate a transcript.
+                    {t("lecture.noTranscriptDescription")}
                   </p>
                   {classId && (
                     <Link
                       href={`/classes/${classId}`}
                       className="mt-4 inline-flex rounded-2xl border border-white/10 bg-white/5 px-4 py-2 text-sm text-white hover:bg-white/10"
                     >
-                      Go to Class Workspace
+                      {t("lecture.goToClassWorkspace")}
                     </Link>
                   )}
                 </div>
@@ -351,11 +353,12 @@ function LecturePageInner({ lectureId }) {
 }
 
 export default function LecturePage({ params }) {
+  const { t } = useTranslation();
   const { id: lectureId } = use(params);
   return (
     <Suspense fallback={
       <main className="min-h-screen bg-slate-950 px-6 py-10 text-white">
-        <p className="text-slate-400">Loading...</p>
+        <p className="text-slate-400">{t("messages.loading")}</p>
       </main>
     }>
       <LecturePageInner lectureId={lectureId} />
@@ -364,6 +367,7 @@ export default function LecturePage({ params }) {
 }
 
 function TabShell({ title, description, hasContent, hasTranscript, isGenerating, onGenerate, children }) {
+  const { t } = useTranslation();
   return (
     <div>
       <div className="mb-6 flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
@@ -375,26 +379,26 @@ function TabShell({ title, description, hasContent, hasTranscript, isGenerating,
           onClick={onGenerate}
           disabled={isGenerating || !hasTranscript}
           className="shrink-0 rounded-2xl border border-cyan-400/20 bg-cyan-400/10 px-4 py-2 text-sm font-medium text-cyan-200 transition hover:bg-cyan-400/20 disabled:cursor-not-allowed disabled:opacity-50"
-          title={!hasTranscript ? "Transcript required to generate content" : undefined}
+          title={!hasTranscript ? t("lecture.transcriptRequiredTitle") : undefined}
         >
-          {isGenerating ? "Generating..." : hasContent ? "Regenerate" : "Generate"}
+          {isGenerating ? t("lecture.generating") : hasContent ? t("lecture.regenerate") : t("lecture.generate")}
         </button>
       </div>
 
       {isGenerating && (
         <div className="flex flex-col items-center gap-4 py-16 text-center">
           <div className="h-10 w-10 animate-spin rounded-full border-2 border-cyan-400 border-t-transparent" />
-          <p className="text-slate-400">Generating {title.toLowerCase()}...</p>
+          <p className="text-slate-400">{t("lecture.generatingNamed", { title: title.toLowerCase() })}</p>
         </div>
       )}
 
       {!isGenerating && !hasContent && (
         <div className="rounded-2xl border border-white/10 bg-slate-900/60 p-10 text-center">
-          <p className="text-slate-400">No {title.toLowerCase()} generated yet.</p>
+          <p className="text-slate-400">{t("lecture.noGeneratedYet", { title: title.toLowerCase() })}</p>
           {hasTranscript ? (
-            <p className="mt-2 text-sm text-slate-500">Click Generate to create one from the transcript.</p>
+            <p className="mt-2 text-sm text-slate-500">{t("lecture.clickGenerate")}</p>
           ) : (
-            <p className="mt-2 text-sm text-slate-500">A transcript is required before generating content.</p>
+            <p className="mt-2 text-sm text-slate-500">{t("lecture.transcriptRequired")}</p>
           )}
         </div>
       )}
@@ -405,13 +409,14 @@ function TabShell({ title, description, hasContent, hasTranscript, isGenerating,
 }
 
 function SummaryView({ data }) {
+  const { t } = useTranslation();
   return (
     <div className="space-y-6">
       <h3 className="text-2xl font-semibold text-white">{data.title}</h3>
       <p className="leading-7 text-slate-300">{data.overview}</p>
       <div>
         <p className="mb-3 text-xs font-medium uppercase tracking-widest text-slate-400">
-          Key Points
+          {t("lecture.summary.keyPoints")}
         </p>
         <ul className="space-y-2">
           {data.keyPoints?.map((point, i) => (
@@ -424,7 +429,7 @@ function SummaryView({ data }) {
       </div>
       <div className="rounded-2xl border border-white/10 bg-slate-900/60 p-5">
         <p className="mb-2 text-xs font-medium uppercase tracking-widest text-slate-400">
-          Conclusion
+          {t("lecture.summary.conclusion")}
         </p>
         <p className="leading-7 text-slate-300">{data.conclusion}</p>
       </div>
@@ -433,6 +438,7 @@ function SummaryView({ data }) {
 }
 
 function FlashcardsView({ cards }) {
+  const { t } = useTranslation();
   const [index, setIndex] = useState(0);
   const [flipped, setFlipped] = useState(false);
 
@@ -455,13 +461,13 @@ function FlashcardsView({ cards }) {
         style={{ minHeight: 220 }}
       >
         <p className="mb-4 text-xs uppercase tracking-widest text-slate-400">
-          {flipped ? "Answer" : "Question"}
+          {flipped ? t("lecture.flashcards.answer") : t("lecture.flashcards.question")}
         </p>
         <p className="text-xl font-semibold leading-8 text-white">
           {flipped ? cards[index].back : cards[index].front}
         </p>
         <p className="mt-6 text-xs text-slate-500">
-          Click to {flipped ? "see question" : "reveal answer"}
+          {flipped ? t("lecture.flashcards.clickSeeQuestion") : t("lecture.flashcards.clickRevealAnswer")}
         </p>
       </button>
 
@@ -471,14 +477,14 @@ function FlashcardsView({ cards }) {
           disabled={index === 0}
           className="rounded-2xl border border-white/10 bg-white/5 px-5 py-2 text-sm font-medium text-white transition hover:bg-white/10 disabled:opacity-40"
         >
-          Previous
+          {t("buttons.previous")}
         </button>
         <button
           onClick={() => goTo(Math.min(cards.length - 1, index + 1))}
           disabled={index === cards.length - 1}
           className="rounded-2xl border border-white/10 bg-white/5 px-5 py-2 text-sm font-medium text-white transition hover:bg-white/10 disabled:opacity-40"
         >
-          Next
+          {t("buttons.next")}
         </button>
       </div>
 
@@ -498,6 +504,7 @@ function FlashcardsView({ cards }) {
 }
 
 function QuizView({ questions }) {
+  const { t } = useTranslation();
   const [selected, setSelected] = useState({});
   const [revealed, setRevealed] = useState({});
 
@@ -513,11 +520,11 @@ function QuizView({ questions }) {
       {total > 0 && (
         <div className="rounded-2xl border border-white/10 bg-slate-900/60 p-4 text-center">
           <p className="text-sm text-slate-400">
-            Score so far:{" "}
+            {t("lecture.quiz.scoreSoFar")}{" "}
             <span className="font-semibold text-white">
               {score} / {total}
             </span>{" "}
-            revealed
+            {t("lecture.quiz.revealed")}
           </p>
         </div>
       )}
@@ -575,11 +582,11 @@ function QuizView({ questions }) {
                 disabled={!selected[i]}
                 className="mt-4 rounded-xl border border-white/10 bg-white/5 px-4 py-2 text-sm font-medium text-white transition hover:bg-white/10 disabled:opacity-40 disabled:cursor-not-allowed"
               >
-                Check Answer
+                {t("lecture.quiz.checkAnswer")}
               </button>
             ) : (
               <div className="mt-4 rounded-xl border border-white/10 bg-slate-950/60 p-4">
-                <p className="mb-1 text-xs text-slate-400">Explanation</p>
+                <p className="mb-1 text-xs text-slate-400">{t("lecture.quiz.explanation")}</p>
                 <p className="text-sm leading-6 text-slate-300">
                   {q.explanation}
                 </p>
@@ -592,7 +599,7 @@ function QuizView({ questions }) {
   );
 }
 
-function StatusPill({ status }) {
+function StatusPill({ status, label = status }) {
   const styles =
     status === "Processed"
       ? "border-emerald-400/20 bg-emerald-400/10 text-emerald-200"
@@ -601,7 +608,7 @@ function StatusPill({ status }) {
       : "border-white/10 bg-white/5 text-slate-300";
   return (
     <span className={`rounded-full border px-3 py-1 text-xs font-medium ${styles}`}>
-      {status}
+      {label}
     </span>
   );
 }

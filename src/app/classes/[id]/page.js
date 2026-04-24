@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { use, useEffect, useMemo, useRef, useState } from "react";
 import { onAuthStateChanged } from "firebase/auth";
+import { useTranslation } from "react-i18next";
 import {
   addDoc,
   collection,
@@ -19,6 +20,7 @@ import { auth, db } from "@/lib/firebase";
 
 
 export default function ClassPage({ params }) {
+  const { t, i18n } = useTranslation();
   const { id: classId } = use(params);
   const fileInputRef = useRef(null);
 
@@ -100,8 +102,8 @@ export default function ClassPage({ params }) {
 
           return {
             id: lectureDoc.id,
-            title: data.title || "Untitled Lecture",
-            date: data.dateLabel || "No date",
+            title: data.title || t("lecture.untitledLecture"),
+            date: data.dateLabel || t("lecture.noDate"),
             duration: data.durationLabel || "0 min",
             status: data.status || "Draft",
             transcript: !!data.transcript,
@@ -118,7 +120,7 @@ export default function ClassPage({ params }) {
         setLectures(lecturesData);
       } catch (error) {
         console.error(error);
-        setPageError("Failed to load this class.");
+        setPageError(t("classPage.loadError"));
       } finally {
         setPageLoading(false);
       }
@@ -127,7 +129,7 @@ export default function ClassPage({ params }) {
     if (!loadingAuth) {
       loadClassData();
     }
-  }, [user, loadingAuth, classId]);
+  }, [user, loadingAuth, classId, t]);
 
   useEffect(() => {
     return () => {
@@ -185,7 +187,7 @@ export default function ClassPage({ params }) {
 
   async function sendAudioToBackend(file) {
     if (!selectedLectureId) {
-      alert("Select a lecture first before adding audio.");
+      alert(t("classPage.selectLectureFirst"));
       return;
     }
 
@@ -205,13 +207,13 @@ export default function ClassPage({ params }) {
       const data = await res.json();
 
       if (!res.ok) {
-        throw new Error(data.error || "Failed to transcribe audio.");
+        throw new Error(data.error || t("classPage.transcribeError"));
       }
 
       const transcriptText = data.text || "";
 
       if (!transcriptText.trim()) {
-        throw new Error("No speech detected in the recording. Make sure your microphone is working and try speaking clearly.");
+        throw new Error(t("classPage.noSpeechError"));
       }
 
       setTranscript(transcriptText);
@@ -244,7 +246,7 @@ export default function ClassPage({ params }) {
         )
       );
     } catch (error) {
-      setAudioError(error.message || "Something went wrong while processing audio.");
+      setAudioError(error.message || t("classPage.audioProcessingError"));
     } finally {
       setIsProcessingAudio(false);
     }
@@ -307,7 +309,7 @@ export default function ClassPage({ params }) {
         setRecordingTime((t) => t + 1);
       }, 1000);
     } catch (error) {
-      setAudioError("Could not access microphone.");
+      setAudioError(t("classPage.microphoneError"));
     }
   }
 
@@ -316,7 +318,7 @@ export default function ClassPage({ params }) {
 
     const title = recordingLectureTitle.trim();
     if (!title) {
-      alert("Please enter a lecture title first.");
+      alert(t("classPage.lectureTitleRequired"));
       return;
     }
 
@@ -345,7 +347,7 @@ export default function ClassPage({ params }) {
         },
         audioFileUrl: "",
         durationLabel: "0 min",
-        dateLabel: new Date().toLocaleDateString("en-US", {
+        dateLabel: new Date().toLocaleDateString(i18n.language, {
           month: "short",
           day: "numeric",
           year: "numeric",
@@ -380,7 +382,7 @@ export default function ClassPage({ params }) {
       setSelectedLectureId(lectureRef.id);
     } catch (error) {
       console.error(error);
-      alert("Failed to create lecture.");
+      alert(t("classPage.createLectureError"));
     } finally {
       setCreatingLecture(false);
     }
@@ -390,7 +392,7 @@ export default function ClassPage({ params }) {
     return (
       <main className="min-h-screen bg-slate-950 px-6 py-10 text-white">
         <div className="mx-auto max-w-7xl">
-          <p className="text-slate-300">Loading class...</p>
+          <p className="text-slate-300">{t("classPage.loadingClass")}</p>
         </div>
       </main>
     );
@@ -400,15 +402,15 @@ export default function ClassPage({ params }) {
     return (
       <main className="min-h-screen bg-slate-950 px-6 py-10 text-white">
         <div className="mx-auto max-w-5xl">
-          <h1 className="text-3xl font-bold">Please log in</h1>
+          <h1 className="text-3xl font-bold">{t("auth.pleaseLogIn")}</h1>
           <p className="mt-3 text-slate-400">
-            You need to sign in before viewing your classes.
+            {t("classPage.signInRequired")}
           </p>
           <Link
             href="/"
             className="mt-6 inline-flex rounded-2xl border border-white/10 bg-white/5 px-4 py-2 text-sm font-medium text-white transition hover:bg-white/10"
           >
-            Back Home
+            {t("navigation.backHome")}
           </Link>
         </div>
       </main>
@@ -419,13 +421,13 @@ export default function ClassPage({ params }) {
     return (
       <main className="min-h-screen bg-slate-950 px-6 py-10 text-white">
         <div className="mx-auto max-w-5xl">
-          <h1 className="text-3xl font-bold">Something went wrong</h1>
+          <h1 className="text-3xl font-bold">{t("messages.somethingWentWrong")}</h1>
           <p className="mt-3 text-slate-400">{pageError}</p>
           <Link
             href="/"
             className="mt-6 inline-flex rounded-2xl border border-white/10 bg-white/5 px-4 py-2 text-sm font-medium text-white transition hover:bg-white/10"
           >
-            Back Home
+            {t("navigation.backHome")}
           </Link>
         </div>
       </main>
@@ -436,15 +438,15 @@ export default function ClassPage({ params }) {
     return (
       <main className="min-h-screen bg-slate-950 px-6 py-10 text-white">
         <div className="mx-auto max-w-5xl">
-          <h1 className="text-3xl font-bold">Class not found</h1>
+          <h1 className="text-3xl font-bold">{t("classPage.notFound")}</h1>
           <p className="mt-3 text-slate-400">
-            This class does not exist for your account.
+            {t("classPage.notFoundDescription")}
           </p>
           <Link
             href="/"
             className="mt-6 inline-flex rounded-2xl border border-white/10 bg-white/5 px-4 py-2 text-sm font-medium text-white transition hover:bg-white/10"
           >
-            Back Home
+            {t("navigation.backHome")}
           </Link>
         </div>
       </main>
@@ -455,7 +457,7 @@ export default function ClassPage({ params }) {
 
   return (
     <main className="min-h-screen bg-slate-950 text-white">
-      <div className="absolute inset-0 overflow-hidden">
+      <div className="pointer-events-none absolute inset-0 overflow-hidden">
         <div className="absolute left-[-120px] top-[-120px] h-80 w-80 rounded-full bg-cyan-500/10 blur-3xl" />
         <div className="absolute right-[-100px] top-20 h-72 w-72 rounded-full bg-fuchsia-500/10 blur-3xl" />
         <div className="absolute bottom-[-120px] left-1/3 h-96 w-96 rounded-full bg-violet-500/10 blur-3xl" />
@@ -467,7 +469,7 @@ export default function ClassPage({ params }) {
             href="/"
             className="inline-flex rounded-full border border-white/10 bg-white/5 px-4 py-2 text-sm text-slate-300 transition hover:bg-white/10 hover:text-white"
           >
-            ← Back to Classes
+            {t("navigation.backToClasses")}
           </Link>
         </div>
 
@@ -478,29 +480,27 @@ export default function ClassPage({ params }) {
             <div className="flex flex-col gap-8 lg:flex-row lg:items-end lg:justify-between">
               <div>
                 <div className="mb-3 inline-flex items-center rounded-full border border-cyan-400/20 bg-cyan-400/10 px-3 py-1 text-xs font-medium text-cyan-200">
-                  Class Workspace
+                  {t("classPage.workspace")}
                 </div>
                 <h1 className="text-4xl font-bold tracking-tight sm:text-5xl">
-                  {currentClass.name || "Untitled Class"}
+                  {currentClass.name || t("home.untitledClass")}
                 </h1>
                 <p className="mt-3 text-base text-slate-300">
-                  {currentClass.professor || "No professor"} ·{" "}
-                  {currentClass.semester || "No semester"}
+                  {currentClass.professor || t("home.noProfessor")} ·{" "}
+                  {currentClass.semester || t("classPage.noSemester")}
                 </p>
                 <p className="mt-4 max-w-2xl text-sm leading-6 text-slate-400 sm:text-base">
-                  Manage lecture recordings, update audio, and access every
-                  transcript, summary, flashcard set, quiz, and mind map for
-                  this class in one place.
+                  {t("classPage.workspaceDescription")}
                 </p>
               </div>
 
               <div className="grid grid-cols-2 gap-3 sm:grid-cols-3">
-                <StatCard label="Lectures" value={totals.lectures} />
-                <StatCard label="Summaries" value={totals.summaries} />
-                <StatCard label="Mind Maps" value={totals.mindMaps} />
-                <StatCard label="Flashcards" value={totals.flashcards} />
-                <StatCard label="Quizzes" value={totals.quizzes} />
-                <StatCard label="Transcripts" value={totals.transcripts} />
+                <StatCard label={t("lecture.content.lectures")} value={totals.lectures} />
+                <StatCard label={t("lecture.content.summaries")} value={totals.summaries} />
+                <StatCard label={t("lecture.content.mindMaps")} value={totals.mindMaps} />
+                <StatCard label={t("lecture.content.flashcards")} value={totals.flashcards} />
+                <StatCard label={t("lecture.content.quizzes")} value={totals.quizzes} />
+                <StatCard label={t("lecture.content.transcripts")} value={totals.transcripts} />
               </div>
             </div>
           </div>
@@ -510,20 +510,19 @@ export default function ClassPage({ params }) {
           <section className="rounded-3xl border border-white/10 bg-white/5 p-6 shadow-2xl backdrop-blur-xl">
             <div className="mb-6 flex flex-col gap-4 xl:flex-row xl:items-center xl:justify-between">
               <div>
-                <h2 className="text-2xl font-semibold">Class Library</h2>
+                <h2 className="text-2xl font-semibold">{t("classPage.library")}</h2>
                 <p className="mt-1 text-sm text-slate-400">
-                  Switch between lectures, mental maps, summaries, flashcards,
-                  and quizzes.
+                  {t("classPage.libraryDescription")}
                 </p>
               </div>
 
               <div className="flex flex-wrap gap-2">
                 {[
-                  ["lectures", "Lectures"],
-                  ["mindmaps", "Mind Maps"],
-                  ["summaries", "Summaries"],
-                  ["flashcards", "Flashcards"],
-                  ["quizzes", "Quizzes"],
+                  ["lectures", t("lecture.content.lectures")],
+                  ["mindmaps", t("lecture.content.mindMaps")],
+                  ["summaries", t("lecture.content.summaries")],
+                  ["flashcards", t("lecture.content.flashcards")],
+                  ["quizzes", t("lecture.content.quizzes")],
                 ].map(([key, label]) => (
                   <button
                     key={key}
@@ -544,10 +543,10 @@ export default function ClassPage({ params }) {
               {filteredLectures.length === 0 ? (
                 <div className="rounded-3xl border border-white/10 bg-slate-900/60 p-6">
                   <p className="text-lg font-semibold text-white">
-                    No lectures yet
+                    {t("classPage.noLectures")}
                   </p>
                   <p className="mt-2 text-sm text-slate-400">
-                    Create your first lecture for this class on the right panel.
+                    {t("classPage.createFirstLecture")}
                   </p>
                 </div>
               ) : (
@@ -562,7 +561,7 @@ export default function ClassPage({ params }) {
                           <h3 className="text-xl font-semibold text-white">
                             {lecture.title}
                           </h3>
-                          <StatusPill status={lecture.status} />
+                          <StatusPill status={lecture.status} label={t(`statuses.${lecture.status}`, { defaultValue: lecture.status })} />
                         </div>
 
                         <p className="mt-2 text-sm text-slate-400">
@@ -571,14 +570,14 @@ export default function ClassPage({ params }) {
 
                         <div className="mt-4 flex flex-wrap gap-2">
                           <MiniBadge
-                            label={`${lecture.transcript ? 1 : 0} Transcript`}
+                            label={t("classPage.badges.transcript", { count: lecture.transcript ? 1 : 0 })}
                           />
                           <MiniBadge
-                            label={`${lecture.summary ? 1 : 0} Summary`}
+                            label={t("classPage.badges.summary", { count: lecture.summary ? 1 : 0 })}
                           />
-                          <MiniBadge label={`${lecture.flashcards} Flashcards`} />
-                          <MiniBadge label={`${lecture.quizzes} Quizzes`} />
-                          <MiniBadge label={`${lecture.mindMaps} Mind Map`} />
+                          <MiniBadge label={t("classPage.badges.flashcards", { count: lecture.flashcards })} />
+                          <MiniBadge label={t("classPage.badges.quizzes", { count: lecture.quizzes })} />
+                          <MiniBadge label={t("classPage.badges.mindMaps", { count: lecture.mindMaps })} />
                         </div>
                       </div>
 
@@ -587,34 +586,34 @@ export default function ClassPage({ params }) {
                           href={`/lecture/${lecture.id}?classId=${classId}`}
                           className="rounded-2xl border border-white/10 bg-white/5 px-4 py-2 text-sm font-medium text-white transition hover:bg-white/10"
                         >
-                          Open Lecture
+                          {t("classPage.openLecture")}
                         </Link>
 
                         <button
                           onClick={() => setSelectedLectureId(lecture.id)}
                           className="rounded-2xl border border-cyan-400/20 bg-cyan-400/10 px-4 py-2 text-sm font-medium text-cyan-200 transition hover:bg-cyan-400/20"
                         >
-                          Add Audio
+                          {t("classPage.addAudio")}
                         </button>
                       </div>
                     </div>
 
                     <div className="mt-5 grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
                       <FeatureCard
-                        title="Summary"
-                        text="Open the lecture summary and review the main takeaways."
+                        title={t("lecture.tabs.summary")}
+                        text={t("classPage.features.summary")}
                       />
                       <FeatureCard
-                        title="Flashcards"
-                        text="Study core concepts with generated cards."
+                        title={t("lecture.tabs.flashcards")}
+                        text={t("classPage.features.flashcards")}
                       />
                       <FeatureCard
-                        title="Quiz"
-                        text="Test yourself with questions and explanations."
+                        title={t("lecture.tabs.quiz")}
+                        text={t("classPage.features.quiz")}
                       />
                       <FeatureCard
-                        title="Mind Map"
-                        text="Visualize the lecture structure and edit connections."
+                        title={t("lecture.tabs.mindmap")}
+                        text={t("classPage.features.mindMap")}
                       />
                     </div>
                   </div>
@@ -625,20 +624,20 @@ export default function ClassPage({ params }) {
 
           <section className="flex flex-col gap-6">
             <div className="rounded-3xl border border-white/10 bg-white/5 p-6 shadow-2xl backdrop-blur-xl">
-              <h2 className="text-2xl font-semibold">New Lecture</h2>
+              <h2 className="text-2xl font-semibold">{t("classPage.newLecture")}</h2>
               <p className="mt-2 text-sm text-slate-400">
-                Create a lecture, then add audio to generate its transcript.
+                {t("classPage.newLectureDescription")}
               </p>
 
               <div className="mt-5 rounded-3xl border border-white/10 bg-slate-900/60 p-5">
                 <label className="text-sm font-medium text-slate-300">
-                  Lecture title
+                  {t("classPage.lectureTitle")}
                 </label>
                 <input
                   value={recordingLectureTitle}
                   onChange={(e) => setRecordingLectureTitle(e.target.value)}
                   onKeyDown={(e) => e.key === "Enter" && createLecture()}
-                  placeholder="Ex: Backpropagation and Training"
+                  placeholder={t("classPage.lectureTitlePlaceholder")}
                   className="mt-2 w-full rounded-2xl border border-white/10 bg-slate-950/80 px-4 py-3 text-sm text-white outline-none transition placeholder:text-slate-500 focus:border-cyan-400/40"
                 />
                 <button
@@ -646,7 +645,7 @@ export default function ClassPage({ params }) {
                   disabled={creatingLecture || !recordingLectureTitle.trim()}
                   className="mt-4 w-full rounded-2xl bg-gradient-to-r from-cyan-400 to-blue-500 px-4 py-3 text-sm font-semibold text-slate-950 transition hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-60"
                 >
-                  {creatingLecture ? "Creating..." : "Create Lecture"}
+                  {creatingLecture ? t("home.creating") : t("classPage.createLecture")}
                 </button>
               </div>
             </div>
@@ -654,16 +653,16 @@ export default function ClassPage({ params }) {
             <div className="rounded-3xl border border-white/10 bg-white/5 p-6 shadow-2xl backdrop-blur-xl">
               <div className="flex items-start justify-between gap-4">
                 <div>
-                  <h2 className="text-2xl font-semibold">Add Audio</h2>
+                  <h2 className="text-2xl font-semibold">{t("classPage.addAudio")}</h2>
                   <p className="mt-2 text-sm text-slate-400">
                     {selectedLecture
-                      ? `Attaching audio to: ${selectedLecture.title}`
-                      : "Select a lecture from the list to add audio."}
+                      ? t("classPage.attachingAudioTo", { title: selectedLecture.title })
+                      : t("classPage.selectLectureToAddAudio")}
                   </p>
                 </div>
                 {isRecording && (
                   <span className="rounded-full border border-rose-400/20 bg-rose-400/10 px-3 py-1 text-xs font-semibold text-rose-200">
-                    Recording · {formatRecordingTime(recordingTime)}
+                    {t("classPage.recordingStatus", { time: formatRecordingTime(recordingTime) })}
                   </span>
                 )}
               </div>
@@ -680,7 +679,7 @@ export default function ClassPage({ params }) {
                           : "bg-gradient-to-r from-cyan-400 to-blue-500 text-slate-950 hover:opacity-90"
                       }`}
                     >
-                      {isRecording ? "Stop Recording" : "Start Recording"}
+                      {isRecording ? t("recording.stopRecording") : t("recording.startRecording")}
                     </button>
 
                     <button
@@ -688,7 +687,7 @@ export default function ClassPage({ params }) {
                       disabled={isRecording || isProcessingAudio}
                       className="rounded-2xl border border-fuchsia-400/20 bg-fuchsia-400/10 px-4 py-3 text-sm font-semibold text-fuchsia-200 transition hover:bg-fuchsia-400/20 disabled:cursor-not-allowed disabled:opacity-60"
                     >
-                      Upload Audio File
+                      {t("classPage.uploadAudioFile")}
                     </button>
                   </div>
 
@@ -702,23 +701,23 @@ export default function ClassPage({ params }) {
 
                   {isProcessingAudio && (
                     <div className="mt-4 rounded-2xl border border-yellow-400/20 bg-yellow-500/10 p-4">
-                      <p className="text-sm font-semibold text-yellow-200">Transcribing audio...</p>
+                      <p className="text-sm font-semibold text-yellow-200">{t("classPage.transcribingAudio")}</p>
                       <p className="mt-1 text-xs text-yellow-100/80">
-                        This may take a moment depending on length.
+                        {t("classPage.transcribingDescription")}
                       </p>
                     </div>
                   )}
 
                   {audioError && (
                     <div className="mt-4 rounded-2xl border border-red-400/20 bg-red-500/10 p-4">
-                      <p className="text-sm font-semibold text-red-200">Error</p>
+                      <p className="text-sm font-semibold text-red-200">{t("messages.error")}</p>
                       <p className="mt-1 text-xs text-red-100/80">{audioError}</p>
                     </div>
                   )}
 
                   {transcript && (
                     <div className="mt-4 rounded-2xl border border-emerald-400/20 bg-emerald-400/10 p-4">
-                      <p className="text-sm font-semibold text-emerald-200">Transcript saved</p>
+                      <p className="text-sm font-semibold text-emerald-200">{t("classPage.transcriptSaved")}</p>
                       <p className="mt-2 line-clamp-4 text-xs leading-5 text-slate-300">
                         {transcript}
                       </p>
@@ -728,44 +727,44 @@ export default function ClassPage({ params }) {
               ) : (
                 <div className="mt-5 rounded-2xl border border-white/10 bg-slate-900/60 p-5 text-center">
                   <p className="text-sm text-slate-500">
-                    Click <span className="text-slate-300">Add Audio</span> on any lecture in the list to select it here.
+                    {t("classPage.clickAddAudioPrefix")} <span className="text-slate-300">{t("classPage.addAudio")}</span> {t("classPage.clickAddAudioSuffix")}
                   </p>
                 </div>
               )}
             </div>
 
             <div className="rounded-3xl border border-white/10 bg-white/5 p-6 shadow-2xl backdrop-blur-xl">
-              <h2 className="text-2xl font-semibold">Everything in this Class</h2>
+              <h2 className="text-2xl font-semibold">{t("classPage.everythingInClass")}</h2>
               <div className="mt-5 grid gap-3 sm:grid-cols-2">
                 <OutputTile
-                  title="All Lectures"
+                  title={t("classPage.outputs.allLectures.title")}
                   value={totals.lectures}
-                  description="Every recording stored for this course."
+                  description={t("classPage.outputs.allLectures.description")}
                 />
                 <OutputTile
-                  title="All Summaries"
+                  title={t("classPage.outputs.allSummaries.title")}
                   value={totals.summaries}
-                  description="Quick understanding for each lecture."
+                  description={t("classPage.outputs.allSummaries.description")}
                 />
                 <OutputTile
-                  title="All Flashcards"
+                  title={t("classPage.outputs.allFlashcards.title")}
                   value={totals.flashcards}
-                  description="Review cards built from the most important concepts."
+                  description={t("classPage.outputs.allFlashcards.description")}
                 />
                 <OutputTile
-                  title="All Quizzes"
+                  title={t("classPage.outputs.allQuizzes.title")}
                   value={totals.quizzes}
-                  description="Practice questions with answers and feedback."
+                  description={t("classPage.outputs.allQuizzes.description")}
                 />
                 <OutputTile
-                  title="All Mind Maps"
+                  title={t("classPage.outputs.allMindMaps.title")}
                   value={totals.mindMaps}
-                  description="Editable concept maps for visual learning."
+                  description={t("classPage.outputs.allMindMaps.description")}
                 />
                 <OutputTile
-                  title="All Transcripts"
+                  title={t("classPage.outputs.allTranscripts.title")}
                   value={totals.transcripts}
-                  description="Text extracted from lecture recordings."
+                  description={t("classPage.outputs.allTranscripts.description")}
                 />
               </div>
             </div>
@@ -787,7 +786,7 @@ function StatCard({ label, value }) {
   );
 }
 
-function StatusPill({ status }) {
+function StatusPill({ status, label = status }) {
   const styles =
     status === "Processed"
       ? "border border-emerald-400/20 bg-emerald-400/10 text-emerald-200"
@@ -797,7 +796,7 @@ function StatusPill({ status }) {
 
   return (
     <span className={`rounded-full px-3 py-1 text-xs font-medium ${styles}`}>
-      {status}
+      {label}
     </span>
   );
 }

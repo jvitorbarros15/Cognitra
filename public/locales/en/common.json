@@ -9,7 +9,24 @@
     "mindmap": "Mind Map",
     "notebook": "Notebook",
     "classes": "Classes",
-    "about": "About"
+    "about": "About",
+    "tagline": "AI study workspace",
+    "backHome": "Back Home",
+    "backToClasses": "← Back to Classes",
+    "backToClass": "← Back to Class"
+  },
+  "auth": {
+    "user": "User",
+    "pleaseLogIn": "Please log in",
+    "signIn": "Sign In",
+    "signUp": "Sign Up",
+    "logout": "Logout",
+    "welcomeBack": "Welcome back",
+    "createAccount": "Create account",
+    "email": "Email",
+    "password": "Password",
+    "or": "or",
+    "continueWithGoogle": "Continue with Google"
   },
   "buttons": {
     "save": "Save",
@@ -23,14 +40,22 @@
     "record": "Record",
     "play": "Play",
     "pause": "Pause",
-    "continue": "Continue"
+    "continue": "Continue",
+    "previous": "Previous",
+    "next": "Next"
   },
   "messages": {
     "welcome": "Welcome",
     "loading": "Loading...",
     "error": "An error occurred",
     "success": "Success",
-    "confirmation": "Are you sure?"
+    "confirmation": "Are you sure?",
+    "somethingWentWrong": "Something went wrong"
+  },
+  "statuses": {
+    "Draft": "Draft",
+    "Processing": "Processing",
+    "Processed": "Processed"
   },
   "notebook": {
     "title": "Notebook",
@@ -49,5 +74,208 @@
     "seconds": "seconds",
     "minutes": "minutes",
     "hours": "hours"
+  },
+  "home": {
+    "dashboard": "Cognitra Dashboard",
+    "heroTitle": "Turn every lecture into a smarter way to study.",
+    "heroDescription": "Organize your classes, record live lectures, and generate summaries, flashcards, quizzes, and mind maps.",
+    "untitledClass": "Untitled Class",
+    "noProfessor": "No professor",
+    "loadClassesError": "Failed to load classes. Please refresh.",
+    "classRequiredError": "Please enter both class name and professor.",
+    "stats": {
+      "classes": "Classes",
+      "lectures": "Lectures",
+      "flashcards": "Flashcards",
+      "mindMaps": "Mind Maps"
+    },
+    "yourClasses": "Your Classes",
+    "yourClassesDescription": "Each class stores its own lectures, summaries, flashcards, quizzes, and mind maps.",
+    "signInToView": "Sign in to view and manage your classes.",
+    "useSignInButton": "Use the Sign In button in the top right.",
+    "noClasses": "No classes yet.",
+    "createFirstClass": "Create your first class using the panel on the right.",
+    "lectureCount_one": "{{count}} lecture",
+    "lectureCount_other": "{{count}} lectures",
+    "openClass": "Open Class",
+    "newClass": "New Class",
+    "newClassDescription": "Add a course to start organizing its lectures and study materials.",
+    "className": "Class name",
+    "professor": "Professor",
+    "creating": "Creating...",
+    "createClass": "Create Class",
+    "getStarted": "Get Started",
+    "getStartedDescription": "Sign in to create classes and start turning lectures into study materials.",
+    "whatYouGet": "What you get",
+    "features": {
+      "summaries": {
+        "title": "Summaries",
+        "description": "Short and detailed overviews of each lecture."
+      },
+      "flashcards": {
+        "title": "Flashcards",
+        "description": "Quick review cards generated from the content."
+      },
+      "quizzes": {
+        "title": "Quizzes",
+        "description": "Practice questions with answers and explanations."
+      },
+      "mindMaps": {
+        "title": "Mind Maps",
+        "description": "Visual concept structures for better understanding."
+      }
+    }
+  },
+  "classPage": {
+    "loadingClass": "Loading class...",
+    "loadError": "Failed to load this class.",
+    "signInRequired": "You need to sign in before viewing your classes.",
+    "notFound": "Class not found",
+    "notFoundDescription": "This class does not exist for your account.",
+    "workspace": "Class Workspace",
+    "workspaceDescription": "Manage lecture recordings, update audio, and access every transcript, summary, flashcard set, quiz, and mind map for this class in one place.",
+    "noSemester": "No semester",
+    "library": "Class Library",
+    "libraryDescription": "Switch between lectures, mental maps, summaries, flashcards, and quizzes.",
+    "noLectures": "No lectures yet",
+    "createFirstLecture": "Create your first lecture for this class on the right panel.",
+    "openLecture": "Open Lecture",
+    "addAudio": "Add Audio",
+    "newLecture": "New Lecture",
+    "newLectureDescription": "Create a lecture, then add audio to generate its transcript.",
+    "lectureTitle": "Lecture title",
+    "lectureTitlePlaceholder": "Ex: Backpropagation and Training",
+    "createLecture": "Create Lecture",
+    "selectLectureFirst": "Select a lecture first before adding audio.",
+    "selectLectureToAddAudio": "Select a lecture from the list to add audio.",
+    "attachingAudioTo": "Attaching audio to: {{title}}",
+    "recordingStatus": "Recording · {{time}}",
+    "uploadAudioFile": "Upload Audio File",
+    "transcribingAudio": "Transcribing audio...",
+    "transcribingDescription": "This may take a moment depending on length.",
+    "transcriptSaved": "Transcript saved",
+    "clickAddAudioPrefix": "Click",
+    "clickAddAudioSuffix": "on any lecture in the list to select it here.",
+    "everythingInClass": "Everything in this Class",
+    "lectureTitleRequired": "Please enter a lecture title first.",
+    "createLectureError": "Failed to create lecture.",
+    "transcribeError": "Failed to transcribe audio.",
+    "noSpeechError": "No speech detected in the recording. Make sure your microphone is working and try speaking clearly.",
+    "audioProcessingError": "Something went wrong while processing audio.",
+    "microphoneError": "Could not access microphone.",
+    "badges": {
+      "transcript_one": "{{count}} Transcript",
+      "transcript_other": "{{count}} Transcripts",
+      "summary_one": "{{count}} Summary",
+      "summary_other": "{{count}} Summaries",
+      "flashcards_one": "{{count}} Flashcard",
+      "flashcards_other": "{{count}} Flashcards",
+      "quizzes_one": "{{count}} Quiz",
+      "quizzes_other": "{{count}} Quizzes",
+      "mindMaps_one": "{{count}} Mind Map",
+      "mindMaps_other": "{{count}} Mind Maps"
+    },
+    "features": {
+      "summary": "Open the lecture summary and review the main takeaways.",
+      "flashcards": "Study core concepts with generated cards.",
+      "quiz": "Test yourself with questions and explanations.",
+      "mindMap": "Visualize the lecture structure and edit connections."
+    },
+    "outputs": {
+      "allLectures": {
+        "title": "All Lectures",
+        "description": "Every recording stored for this course."
+      },
+      "allSummaries": {
+        "title": "All Summaries",
+        "description": "Quick understanding for each lecture."
+      },
+      "allFlashcards": {
+        "title": "All Flashcards",
+        "description": "Review cards built from the most important concepts."
+      },
+      "allQuizzes": {
+        "title": "All Quizzes",
+        "description": "Practice questions with answers and feedback."
+      },
+      "allMindMaps": {
+        "title": "All Mind Maps",
+        "description": "Editable concept maps for visual learning."
+      },
+      "allTranscripts": {
+        "title": "All Transcripts",
+        "description": "Text extracted from lecture recordings."
+      }
+    }
+  },
+  "lecture": {
+    "label": "Lecture",
+    "untitledLecture": "Untitled Lecture",
+    "noDate": "No date",
+    "loadingLecture": "Loading lecture...",
+    "missingClassId": "Missing class ID. Please open this lecture from the class workspace.",
+    "notFound": "Lecture not found.",
+    "loadError": "Failed to load lecture.",
+    "noTranscriptAlert": "This lecture has no transcript yet. Please record or upload audio in the class workspace first.",
+    "generateError": "Failed to generate {{type}}",
+    "generate": "Generate",
+    "regenerate": "Regenerate",
+    "generating": "Generating...",
+    "generatingNamed": "Generating {{title}}...",
+    "noGeneratedYet": "No {{title}} generated yet.",
+    "clickGenerate": "Click Generate to create one from the transcript.",
+    "transcriptRequired": "A transcript is required before generating content.",
+    "transcriptRequiredTitle": "Transcript required to generate content",
+    "noTranscript": "No transcript yet.",
+    "noTranscriptDescription": "Record or upload audio in the class workspace to generate a transcript.",
+    "goToClassWorkspace": "Go to Class Workspace",
+    "tabs": {
+      "summary": "Summary",
+      "flashcards": "Flashcards",
+      "quiz": "Quiz",
+      "mindmap": "Mind Map",
+      "notebook": "Notebook",
+      "transcript": "Transcript"
+    },
+    "content": {
+      "lecture": "Lecture",
+      "lectures": "Lectures",
+      "summary": "Summary",
+      "summaries": "Summaries",
+      "flashcards": "Flashcards",
+      "quizzes": "Quizzes",
+      "transcript": "Transcript",
+      "transcripts": "Transcripts",
+      "mindMap": "Mind Map",
+      "mindMaps": "Mind Maps",
+      "notebook": "Notebook",
+      "flashcardsCount_one": "{{count}} Flashcard",
+      "flashcardsCount_other": "{{count}} Flashcards",
+      "quizQuestionsCount_one": "{{count}} Quiz Question",
+      "quizQuestionsCount_other": "{{count}} Quiz Questions"
+    },
+    "descriptions": {
+      "summary": "A structured overview of the lecture with key points and conclusion.",
+      "flashcards": "Study core concepts with generated flip cards.",
+      "quiz": "Multiple-choice questions to test your understanding.",
+      "mindmap": "Visual representation of the lecture structure.",
+      "notebook": "AI-generated class notes with highlighting and pencil annotations."
+    },
+    "summary": {
+      "keyPoints": "Key Points",
+      "conclusion": "Conclusion"
+    },
+    "flashcards": {
+      "answer": "Answer",
+      "question": "Question",
+      "clickSeeQuestion": "Click to see question",
+      "clickRevealAnswer": "Click to reveal answer"
+    },
+    "quiz": {
+      "scoreSoFar": "Score so far:",
+      "revealed": "revealed",
+      "checkAnswer": "Check Answer",
+      "explanation": "Explanation"
+    }
   }
 }

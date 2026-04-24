@@ -9,7 +9,24 @@
     "mindmap": "Mapa Mental",
     "notebook": "Caderno",
     "classes": "Aulas",
-    "about": "Sobre"
+    "about": "Sobre",
+    "tagline": "Espaço de estudo com IA",
+    "backHome": "Voltar ao Início",
+    "backToClasses": "← Voltar às Disciplinas",
+    "backToClass": "← Voltar à Disciplina"
+  },
+  "auth": {
+    "user": "Usuário",
+    "pleaseLogIn": "Faça login",
+    "signIn": "Entrar",
+    "signUp": "Cadastrar",
+    "logout": "Sair",
+    "welcomeBack": "Bem-vindo de volta",
+    "createAccount": "Criar conta",
+    "email": "E-mail",
+    "password": "Senha",
+    "or": "ou",
+    "continueWithGoogle": "Continuar com Google"
   },
   "buttons": {
     "save": "Salvar",
@@ -23,14 +40,22 @@
     "record": "Gravar",
     "play": "Reproduzir",
     "pause": "Pausar",
-    "continue": "Continuar"
+    "continue": "Continuar",
+    "previous": "Anterior",
+    "next": "Próximo"
   },
   "messages": {
     "welcome": "Bem-vindo",
     "loading": "Carregando...",
     "error": "Ocorreu um erro",
     "success": "Sucesso",
-    "confirmation": "Tem certeza?"
+    "confirmation": "Tem certeza?",
+    "somethingWentWrong": "Algo deu errado"
+  },
+  "statuses": {
+    "Draft": "Rascunho",
+    "Processing": "Processando",
+    "Processed": "Processado"
   },
   "notebook": {
     "title": "Caderno",
@@ -49,5 +74,208 @@
     "seconds": "segundos",
     "minutes": "minutos",
     "hours": "horas"
+  },
+  "home": {
+    "dashboard": "Painel Cognitra",
+    "heroTitle": "Transforme cada aula em um jeito mais inteligente de estudar.",
+    "heroDescription": "Organize suas disciplinas, grave aulas ao vivo e gere resumos, flashcards, quizzes e mapas mentais.",
+    "untitledClass": "Disciplina sem título",
+    "noProfessor": "Sem professor",
+    "loadClassesError": "Falha ao carregar as disciplinas. Atualize a página.",
+    "classRequiredError": "Digite o nome da disciplina e o professor.",
+    "stats": {
+      "classes": "Disciplinas",
+      "lectures": "Aulas",
+      "flashcards": "Flashcards",
+      "mindMaps": "Mapas Mentais"
+    },
+    "yourClasses": "Suas Disciplinas",
+    "yourClassesDescription": "Cada disciplina guarda suas próprias aulas, resumos, flashcards, quizzes e mapas mentais.",
+    "signInToView": "Entre para ver e gerenciar suas disciplinas.",
+    "useSignInButton": "Use o botão Entrar no canto superior direito.",
+    "noClasses": "Nenhuma disciplina ainda.",
+    "createFirstClass": "Crie sua primeira disciplina usando o painel à direita.",
+    "lectureCount_one": "{{count}} aula",
+    "lectureCount_other": "{{count}} aulas",
+    "openClass": "Abrir Disciplina",
+    "newClass": "Nova Disciplina",
+    "newClassDescription": "Adicione uma disciplina para começar a organizar aulas e materiais de estudo.",
+    "className": "Nome da disciplina",
+    "professor": "Professor",
+    "creating": "Criando...",
+    "createClass": "Criar Disciplina",
+    "getStarted": "Comece Agora",
+    "getStartedDescription": "Entre para criar disciplinas e transformar aulas em materiais de estudo.",
+    "whatYouGet": "O que você recebe",
+    "features": {
+      "summaries": {
+        "title": "Resumos",
+        "description": "Visões gerais curtas e detalhadas de cada aula."
+      },
+      "flashcards": {
+        "title": "Flashcards",
+        "description": "Cartões de revisão rápidos gerados a partir do conteúdo."
+      },
+      "quizzes": {
+        "title": "Quizzes",
+        "description": "Perguntas de prática com respostas e explicações."
+      },
+      "mindMaps": {
+        "title": "Mapas Mentais",
+        "description": "Estruturas visuais de conceitos para entender melhor."
+      }
+    }
+  },
+  "classPage": {
+    "loadingClass": "Carregando disciplina...",
+    "loadError": "Falha ao carregar esta disciplina.",
+    "signInRequired": "Você precisa entrar antes de ver suas disciplinas.",
+    "notFound": "Disciplina não encontrada",
+    "notFoundDescription": "Esta disciplina não existe na sua conta.",
+    "workspace": "Área da Disciplina",
+    "workspaceDescription": "Gerencie gravações de aulas, atualize áudios e acesse todos os transcritos, resumos, flashcards, quizzes e mapas mentais desta disciplina em um só lugar.",
+    "noSemester": "Sem semestre",
+    "library": "Biblioteca da Disciplina",
+    "libraryDescription": "Alterne entre aulas, mapas mentais, resumos, flashcards e quizzes.",
+    "noLectures": "Nenhuma aula ainda",
+    "createFirstLecture": "Crie sua primeira aula para esta disciplina no painel à direita.",
+    "openLecture": "Abrir Aula",
+    "addAudio": "Adicionar Áudio",
+    "newLecture": "Nova Aula",
+    "newLectureDescription": "Crie uma aula e depois adicione áudio para gerar o transcrito.",
+    "lectureTitle": "Título da aula",
+    "lectureTitlePlaceholder": "Ex: Retropropagação e Treinamento",
+    "createLecture": "Criar Aula",
+    "selectLectureFirst": "Selecione uma aula antes de adicionar áudio.",
+    "selectLectureToAddAudio": "Selecione uma aula da lista para adicionar áudio.",
+    "attachingAudioTo": "Anexando áudio a: {{title}}",
+    "recordingStatus": "Gravando · {{time}}",
+    "uploadAudioFile": "Enviar Arquivo de Áudio",
+    "transcribingAudio": "Transcrevendo áudio...",
+    "transcribingDescription": "Isso pode levar um momento dependendo da duração.",
+    "transcriptSaved": "Transcrito salvo",
+    "clickAddAudioPrefix": "Clique em",
+    "clickAddAudioSuffix": "em qualquer aula da lista para selecioná-la aqui.",
+    "everythingInClass": "Tudo nesta Disciplina",
+    "lectureTitleRequired": "Digite primeiro um título para a aula.",
+    "createLectureError": "Falha ao criar aula.",
+    "transcribeError": "Falha ao transcrever áudio.",
+    "noSpeechError": "Nenhuma fala detectada na gravação. Verifique se o microfone está funcionando e tente falar claramente.",
+    "audioProcessingError": "Algo deu errado ao processar o áudio.",
+    "microphoneError": "Não foi possível acessar o microfone.",
+    "badges": {
+      "transcript_one": "{{count}} Transcrito",
+      "transcript_other": "{{count}} Transcritos",
+      "summary_one": "{{count}} Resumo",
+      "summary_other": "{{count}} Resumos",
+      "flashcards_one": "{{count}} Flashcard",
+      "flashcards_other": "{{count}} Flashcards",
+      "quizzes_one": "{{count}} Quiz",
+      "quizzes_other": "{{count}} Quizzes",
+      "mindMaps_one": "{{count}} Mapa Mental",
+      "mindMaps_other": "{{count}} Mapas Mentais"
+    },
+    "features": {
+      "summary": "Abra o resumo da aula e revise os principais pontos.",
+      "flashcards": "Estude conceitos principais com cartões gerados.",
+      "quiz": "Teste seu conhecimento com perguntas e explicações.",
+      "mindMap": "Visualize a estrutura da aula e edite conexões."
+    },
+    "outputs": {
+      "allLectures": {
+        "title": "Todas as Aulas",
+        "description": "Todas as gravações armazenadas para esta disciplina."
+      },
+      "allSummaries": {
+        "title": "Todos os Resumos",
+        "description": "Entendimento rápido para cada aula."
+      },
+      "allFlashcards": {
+        "title": "Todos os Flashcards",
+        "description": "Cartões de revisão criados a partir dos conceitos mais importantes."
+      },
+      "allQuizzes": {
+        "title": "Todos os Quizzes",
+        "description": "Perguntas de prática com respostas e feedback."
+      },
+      "allMindMaps": {
+        "title": "Todos os Mapas Mentais",
+        "description": "Mapas de conceitos editáveis para aprendizado visual."
+      },
+      "allTranscripts": {
+        "title": "Todos os Transcritos",
+        "description": "Texto extraído das gravações das aulas."
+      }
+    }
+  },
+  "lecture": {
+    "label": "Aula",
+    "untitledLecture": "Aula sem título",
+    "noDate": "Sem data",
+    "loadingLecture": "Carregando aula...",
+    "missingClassId": "ID da disciplina ausente. Abra esta aula pela área da disciplina.",
+    "notFound": "Aula não encontrada.",
+    "loadError": "Falha ao carregar aula.",
+    "noTranscriptAlert": "Esta aula ainda não tem transcrito. Grave ou envie áudio na área da disciplina primeiro.",
+    "generateError": "Falha ao gerar {{type}}",
+    "generate": "Gerar",
+    "regenerate": "Gerar novamente",
+    "generating": "Gerando...",
+    "generatingNamed": "Gerando {{title}}...",
+    "noGeneratedYet": "Nenhum {{title}} gerado ainda.",
+    "clickGenerate": "Clique em Gerar para criar um a partir do transcrito.",
+    "transcriptRequired": "Um transcrito é necessário antes de gerar conteúdo.",
+    "transcriptRequiredTitle": "Transcrito necessário para gerar conteúdo",
+    "noTranscript": "Nenhum transcrito ainda.",
+    "noTranscriptDescription": "Grave ou envie áudio na área da disciplina para gerar um transcrito.",
+    "goToClassWorkspace": "Ir para a Área da Disciplina",
+    "tabs": {
+      "summary": "Resumo",
+      "flashcards": "Flashcards",
+      "quiz": "Quiz",
+      "mindmap": "Mapa Mental",
+      "notebook": "Caderno",
+      "transcript": "Transcrito"
+    },
+    "content": {
+      "lecture": "Aula",
+      "lectures": "Aulas",
+      "summary": "Resumo",
+      "summaries": "Resumos",
+      "flashcards": "Flashcards",
+      "quizzes": "Quizzes",
+      "transcript": "Transcrito",
+      "transcripts": "Transcritos",
+      "mindMap": "Mapa Mental",
+      "mindMaps": "Mapas Mentais",
+      "notebook": "Caderno",
+      "flashcardsCount_one": "{{count}} Flashcard",
+      "flashcardsCount_other": "{{count}} Flashcards",
+      "quizQuestionsCount_one": "{{count}} Pergunta do Quiz",
+      "quizQuestionsCount_other": "{{count}} Perguntas do Quiz"
+    },
+    "descriptions": {
+      "summary": "Uma visão estruturada da aula com pontos principais e conclusão.",
+      "flashcards": "Estude conceitos principais com flashcards gerados.",
+      "quiz": "Perguntas de múltipla escolha para testar seu entendimento.",
+      "mindmap": "Representação visual da estrutura da aula.",
+      "notebook": "Anotações de aula geradas por IA com destaques e observações."
+    },
+    "summary": {
+      "keyPoints": "Pontos Principais",
+      "conclusion": "Conclusão"
+    },
+    "flashcards": {
+      "answer": "Resposta",
+      "question": "Pergunta",
+      "clickSeeQuestion": "Clique para ver a pergunta",
+      "clickRevealAnswer": "Clique para revelar a resposta"
+    },
+    "quiz": {
+      "scoreSoFar": "Pontuação até agora:",
+      "revealed": "reveladas",
+      "checkAnswer": "Verificar Resposta",
+      "explanation": "Explicação"
+    }
   }
 }

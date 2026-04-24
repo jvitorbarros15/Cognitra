@@ -13,7 +13,7 @@ if (!i18next.isInitialized) {
     .use(initReactI18next)
     .init({
       resources,
-      lng: typeof window !== 'undefined' ? localStorage.getItem('language') || 'en' : 'en',
+      lng: 'en',
       fallbackLng: 'en',
       defaultNS: 'common',
       interpolation: {

@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import { onAuthStateChanged } from "firebase/auth";
+import { useTranslation } from "react-i18next";
 import {
   addDoc,
   collection,
@@ -23,6 +24,7 @@ const gradients = [
 ];
 
 export default function HomePage() {
+  const { t } = useTranslation();
   const [user, setUser] = useState(null);
   const [classes, setClasses] = useState([]);
   const [loadingAuth, setLoadingAuth] = useState(true);
@@ -64,8 +66,8 @@ export default function HomePage() {
           const data = doc.data();
           return {
             id: doc.id,
-            name: data.name || "Untitled Class",
-            professor: data.professor || "No professor",
+            name: data.name || t("home.untitledClass"),
+            professor: data.professor || t("home.noProfessor"),
             color: gradients[index % gradients.length],
           };
         });
@@ -96,18 +98,18 @@ export default function HomePage() {
       },
       (error) => {
         console.error("Firestore snapshot error:", error);
-        setClassesError("Failed to load classes. Please refresh.");
+        setClassesError(t("home.loadClassesError"));
         setLoadingClasses(false);
       }
     );
 
     return () => unsubscribe();
-  }, [user]);
+  }, [user, t]);
 
   async function handleCreateClass() {
     if (!user) return;
     if (!className.trim() || !professor.trim()) {
-      setClassError("Please enter both class name and professor.");
+      setClassError(t("home.classRequiredError"));
       return;
     }
 
@@ -139,21 +141,21 @@ export default function HomePage() {
           <div className="flex flex-col gap-6 lg:flex-row lg:items-center lg:justify-between">
             <div>
               <div className="mb-3 inline-flex items-center rounded-full border border-cyan-400/30 bg-cyan-400/10 px-3 py-1 text-xs font-medium text-cyan-200">
-                Cognitra Dashboard
+                {t("home.dashboard")}
               </div>
               <h1 className="text-4xl font-bold tracking-tight sm:text-5xl">
-                Turn every lecture into a smarter way to study.
+                {t("home.heroTitle")}
               </h1>
               <p className="mt-4 max-w-2xl text-sm leading-6 text-slate-300 sm:text-base">
-                Organize your classes, record live lectures, and generate summaries, flashcards, quizzes, and mind maps.
+                {t("home.heroDescription")}
               </p>
             </div>
 
             <div className="grid shrink-0 grid-cols-2 gap-3">
-              <StatCard label="Classes" value={classes.length} />
-              <StatCard label="Lectures" value={totals.lectures} />
-              <StatCard label="Flashcards" value={totals.flashcards} />
-              <StatCard label="Mind Maps" value={totals.mindMaps} />
+              <StatCard label={t("home.stats.classes")} value={classes.length} />
+              <StatCard label={t("home.stats.lectures")} value={totals.lectures} />
+              <StatCard label={t("home.stats.flashcards")} value={totals.flashcards} />
+              <StatCard label={t("home.stats.mindMaps")} value={totals.mindMaps} />
             </div>
           </div>
         </header>
@@ -161,20 +163,20 @@ export default function HomePage() {
         <div className="grid flex-1 gap-8 lg:grid-cols-[1.15fr_0.85fr]">
           <section className="rounded-3xl border border-white/10 bg-white/5 p-6 shadow-2xl backdrop-blur-xl">
             <div className="mb-6">
-              <h2 className="text-2xl font-semibold">Your Classes</h2>
+              <h2 className="text-2xl font-semibold">{t("home.yourClasses")}</h2>
               <p className="mt-1 text-sm text-slate-400">
-                Each class stores its own lectures, summaries, flashcards, quizzes, and mind maps.
+                {t("home.yourClassesDescription")}
               </p>
             </div>
 
             {loadingAuth || loadingClasses ? (
               <div className="rounded-2xl border border-white/10 bg-slate-900/60 p-6 text-slate-400">
-                Loading...
+                {t("messages.loading")}
               </div>
             ) : !user ? (
               <div className="rounded-2xl border border-white/10 bg-slate-900/60 p-8 text-center">
-                <p className="text-slate-300">Sign in to view and manage your classes.</p>
-                <p className="mt-2 text-sm text-slate-500">Use the Sign In button in the top right.</p>
+                <p className="text-slate-300">{t("home.signInToView")}</p>
+                <p className="mt-2 text-sm text-slate-500">{t("home.useSignInButton")}</p>
               </div>
             ) : classesError ? (
               <div className="rounded-2xl border border-red-400/20 bg-red-500/10 p-6 text-red-300">
@@ -182,8 +184,8 @@ export default function HomePage() {
               </div>
             ) : classes.length === 0 ? (
               <div className="rounded-2xl border border-white/10 bg-slate-900/60 p-8 text-center">
-                <p className="text-slate-300">No classes yet.</p>
-                <p className="mt-2 text-sm text-slate-500">Create your first class using the panel on the right.</p>
+                <p className="text-slate-300">{t("home.noClasses")}</p>
+                <p className="mt-2 text-sm text-slate-500">{t("home.createFirstClass")}</p>
               </div>
             ) : (
               <div className="grid gap-4">
@@ -199,7 +201,7 @@ export default function HomePage() {
                           <p className="mt-1 text-sm text-slate-400">{course.professor}</p>
                         </div>
                         <span className="w-fit rounded-full border border-cyan-400/20 bg-cyan-400/10 px-3 py-1 text-xs text-cyan-200">
-                          {course.lectures} lectures
+                          {t("home.lectureCount", { count: course.lectures })}
                         </span>
                       </div>
 
@@ -208,7 +210,7 @@ export default function HomePage() {
                           href={`/classes/${course.id}`}
                           className="rounded-2xl border border-white/10 bg-white/5 px-4 py-2 text-sm font-medium text-white transition hover:bg-white/10"
                         >
-                          Open Class
+                          {t("home.openClass")}
                         </Link>
                       </div>
                     </div>
@@ -221,15 +223,15 @@ export default function HomePage() {
           <section className="flex flex-col gap-6">
             {user ? (
               <div className="rounded-3xl border border-white/10 bg-white/5 p-6 shadow-2xl backdrop-blur-xl">
-                <h2 className="text-2xl font-semibold">New Class</h2>
+                <h2 className="text-2xl font-semibold">{t("home.newClass")}</h2>
                 <p className="mt-2 text-sm text-slate-400">
-                  Add a course to start organizing its lectures and study materials.
+                  {t("home.newClassDescription")}
                 </p>
 
                 <div className="mt-5 space-y-3">
                   <input
                     type="text"
-                    placeholder="Class name"
+                    placeholder={t("home.className")}
                     value={className}
                     onChange={(e) => setClassName(e.target.value)}
                     onKeyDown={(e) => e.key === "Enter" && handleCreateClass()}
@@ -237,7 +239,7 @@ export default function HomePage() {
                   />
                   <input
                     type="text"
-                    placeholder="Professor"
+                    placeholder={t("home.professor")}
                     value={professor}
                     onChange={(e) => setProfessor(e.target.value)}
                     onKeyDown={(e) => e.key === "Enter" && handleCreateClass()}
@@ -248,7 +250,7 @@ export default function HomePage() {
                     disabled={creatingClass || !className.trim() || !professor.trim()}
                     className="w-full rounded-2xl bg-gradient-to-r from-cyan-400 to-violet-500 py-3 text-sm font-semibold text-slate-950 transition hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-60"
                   >
-                    {creatingClass ? "Creating..." : "Create Class"}
+                    {creatingClass ? t("home.creating") : t("home.createClass")}
                   </button>
                   {classError && (
                     <p className="text-sm text-red-300">{classError}</p>
@@ -257,21 +259,21 @@ export default function HomePage() {
               </div>
             ) : (
               <div className="rounded-3xl border border-white/10 bg-white/5 p-6 shadow-2xl backdrop-blur-xl">
-                <h2 className="text-2xl font-semibold">Get Started</h2>
+                <h2 className="text-2xl font-semibold">{t("home.getStarted")}</h2>
                 <p className="mt-3 text-sm text-slate-400">
-                  Sign in to create classes and start turning lectures into study materials.
+                  {t("home.getStartedDescription")}
                 </p>
               </div>
             )}
 
             <div className="rounded-3xl border border-white/10 bg-white/5 p-6 shadow-2xl backdrop-blur-xl">
-              <h2 className="text-2xl font-semibold">What you get</h2>
+              <h2 className="text-2xl font-semibold">{t("home.whatYouGet")}</h2>
               <div className="mt-5 grid gap-3 sm:grid-cols-2">
                 {[
-                  ["Summaries", "Short and detailed overviews of each lecture."],
-                  ["Flashcards", "Quick review cards generated from the content."],
-                  ["Quizzes", "Practice questions with answers and explanations."],
-                  ["Mind Maps", "Visual concept structures for better understanding."],
+                  [t("home.features.summaries.title"), t("home.features.summaries.description")],
+                  [t("home.features.flashcards.title"), t("home.features.flashcards.description")],
+                  [t("home.features.quizzes.title"), t("home.features.quizzes.description")],
+                  [t("home.features.mindMaps.title"), t("home.features.mindMaps.description")],
                 ].map(([title, description]) => (
                   <div key={title} className="rounded-2xl border border-white/10 bg-slate-900/60 p-4">
                     <p className="font-semibold text-white">{title}</p>
